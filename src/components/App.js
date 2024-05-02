@@ -4,7 +4,7 @@ import Sidebar from "./Sidebar";
 import Dashboard from "../pages/Dashboard";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
-import Portfolio from "./Portfolio";
+import Portfolio from "../pages/Portfolio";
 import { Routes, Route } from "react-router-dom";
 
 function App() {

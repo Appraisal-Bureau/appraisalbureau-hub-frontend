@@ -13,7 +13,7 @@ function Sidebar() {
         className="selected"
         text="Dashboard"
         icon={Dashboard}
-        linkDestination={"/"}
+        linkDestination={"dashboard"}
       />
       <SidebarItem
         text="Portfolio"

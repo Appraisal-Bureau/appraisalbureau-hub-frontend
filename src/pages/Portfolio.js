@@ -1,5 +1,5 @@
-import PortfolioVisualization from "./PortfolioVisualization";
-import MuiTable from "./Table";
+import PortfolioVisualization from "../components/PortfolioVisualization";
+import MuiTable from "../components/Table";
 import { portfolio } from "../api/api";
 
 function Portfolio() {

@@ -1,5 +1,5 @@
 import Card from "../components/Card";
-import Portfolio from "../components/Portfolio";
+import Portfolio from "./Portfolio";
 import MuiTable from "../components/Table";
 import ReportsList from "../components/ReportsList";
 import manHangingPaintingImage from "../assets/man-hanging-painting.svg";

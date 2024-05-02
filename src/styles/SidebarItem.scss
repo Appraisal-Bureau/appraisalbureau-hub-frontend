@@ -13,12 +13,12 @@
   }
 
   &.selected {
-    background-color: $teal;
-    color: $white;
+    background-color: $light-brand-alternate;
+    color: $light-background-primary;
   }
 
   &:hover:not(.selected) {
-    background-color: $light-gray;
+    background-color: $light-background-secondary;
   }
 
   .hover-only {

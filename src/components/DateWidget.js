@@ -1,8 +1,10 @@
-import '../styles/DateWidget.scss';
+import "../styles/DateWidget.scss";
 
-function DateWidget({date}) {
+function DateWidget({ date }) {
   const parsedDate = new Date(date);
-  const monthAbbreviation = parsedDate.toLocaleString('default', { month: 'short' });
+  const monthAbbreviation = parsedDate.toLocaleString("default", {
+    month: "short",
+  });
 
   return (
     <div className="date-widget">

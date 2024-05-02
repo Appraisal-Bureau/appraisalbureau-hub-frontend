@@ -1,14 +1,14 @@
-import '../styles/Card.scss';
-import ActionButton from './ActionButton';
+import "../styles/Card.scss";
+import ActionButton from "./ActionButton";
 
-const Card = ({imgSrc, imgAltText, bodyText, actionButtonText}) => {
+const Card = ({ imgSrc, imgAltText, bodyText, actionButtonText }) => {
   return (
     <div className="card">
       <img src={imgSrc} alt={imgAltText} />
       <p className="body">{bodyText}</p>
-      <ActionButton text={actionButtonText}/>
+      <ActionButton text={actionButtonText} />
     </div>
   );
-}
+};
 
 export default Card;

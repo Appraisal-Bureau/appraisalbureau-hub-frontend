@@ -1,23 +1,23 @@
-@import 'variables';
-@import 'mixins';
+@import "variables";
+@import "mixins";
 
 .card {
-    background-color: $light-gray;
-    margin: 20px;
-    padding: 20px;
-    flex-basis: 100%;
-    .body {
-        font-weight: 300;
-    }
-    @include mobile-only {
-        width: 100%;
-    }
+  background-color: $light-gray;
+  margin: 20px;
+  padding: 20px;
+  flex-basis: 100%;
+  .body {
+    font-weight: 300;
+  }
+  @include mobile-only {
+    width: 100%;
+  }
 }
 
 .card-container {
-    width: 100%;
-    display: inline-flex;
-    @include mobile-only {
-        display: inline-block;
-    }
+  width: 100%;
+  display: inline-flex;
+  @include mobile-only {
+    display: inline-block;
+  }
 }

@@ -1,10 +1,12 @@
-import '../styles/ActionButton.scss';
-import { FiChevronRight } from 'react-icons/fi';
+import "../styles/ActionButton.scss";
+import { FiChevronRight } from "react-icons/fi";
 
-function ActionButton({text}) {
+function ActionButton({ text }) {
   return (
     <div className="actionButton">
-      <p>{text} <FiChevronRight className="icon"/></p>
+      <p>
+        {text} <FiChevronRight className="icon" />
+      </p>
     </div>
   );
 }

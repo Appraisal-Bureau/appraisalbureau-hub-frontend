@@ -1,0 +1,33 @@
+@import "variables";
+
+.sidebar-item {
+    padding: 8px 4px 8px 16px;
+    margin: 0px 10px;
+    display: block;
+    border-radius: 4px;
+
+    img {
+        width: 20px;
+        height: 20px;
+        padding-right: 10px;
+    }
+
+    &.selected {
+        background-color: $teal;
+        color: $white;
+    }
+
+    &:hover:not(.selected) {
+        background-color: $light-gray;
+    }
+
+    .hover-only {
+        float: right;
+        width: 24px;
+        height: 24px;
+        display: none;
+        &:hover {
+            display: block !important;
+        }
+    }
+}

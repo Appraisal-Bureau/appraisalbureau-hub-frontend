@@ -1,0 +1,16 @@
+@import "variables";
+@import "mixins";
+
+.sidebar {
+    height: calc(100% - $nav-bar-height);
+    border-right: 0.5px #A0A0A0;
+    width: $side-bar-width;
+    position: fixed;
+    left: 0;
+    top: $nav-bar-height;
+    display: block;
+    @include mobile-only {
+        display: none;
+    }
+    padding-top: 30px;
+}

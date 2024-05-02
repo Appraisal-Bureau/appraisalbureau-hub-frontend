@@ -1,0 +1,27 @@
+@import 'variables';
+@import 'mixins';
+
+.portfolioVis {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background-color: #F5F5F5;
+
+    .bar {
+        height: 80px;
+        border-radius: 4px;
+        border: solid 1px white;
+    }
+
+    margin: 10px 40px;
+
+    @include mobile-only {
+        margin: 10px;
+    }
+    
+    .tooltip {
+        font-size: 16px;
+        background-color: $white;
+        color: $medium-gray;
+    }
+}

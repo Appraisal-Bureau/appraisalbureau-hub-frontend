@@ -2,17 +2,68 @@
 @import "fonts";
 @import "mixins";
 
-h1 {
+.title {
   font-family: "Playfair Display";
-  font-size: 40px;
-  color: $light-text-primary;
   font-weight: 500;
+  @include mobile-only {
+    font-size: 40px;
+    letter-spacing: 0.97px;
+    line-height: 45px;
+  }
+  @include tablet-portrait-up {
+    font-size: 45px;
+    letter-spacing: 1.1px;
+    line-height: 51px;
+  }
+  @include desktop-up {
+    font-size: 60px;
+    letter-spacing: 1.5px;
+    line-height: 68px;
+  }
+}
+
+h1 {
+  font-family: "Roboto";
+  @include mobile-only {
+    font-size: 33px;
+  }
+  @include tablet-portrait-up {
+    font-size: 40px;
+  }
+  @include desktop-up {
+    font-size: 44px;
+  }
+  color: $light-text-primary;
+  font-weight: 300;
   padding: 50px 20px 20px 20px;
 }
 
+h2 {
+  font-family: "Roboto";
+  @include mobile-only {
+    font-size: 28px;
+  }
+  @include tablet-portrait-up {
+    font-size: 33px;
+  }
+  @include desktop-up {
+    font-size: 36px;
+  }
+  font-weight: 400;
+}
+
 h3 {
+  font-family: "Roboto";
   color: $light-text-secondary;
-  font-size: 28px;
+  @include mobile-only {
+    font-size: 22px;
+  }
+  @include tablet-portrait-up {
+    font-size: 26px;
+  }
+  @include desktop-up {
+    font-size: 28px;
+  }
   font-weight: 400;
 }
 
@@ -20,13 +71,85 @@ h4 {
   padding: 20px;
   margin: 0;
   font-family: "Roboto";
-  font-size: 24px;
+  @include mobile-only {
+    font-size: 20px;
+  }
+  @include tablet-portrait-up {
+    font-size: 22px;
+  }
+  @include desktop-up {
+    font-size: 24px;
+  }
   font-weight: 400;
 }
 
-p {
+.primary-body {
   font-family: "Roboto";
-  font-size: 16px;
+  font-weight: 300;
+  @include mobile-only {
+    font-size: 16px;
+  }
+  @include tablet-portrait-up {
+    font-size: 17px;
+  }
+  @include desktop-up {
+    font-size: 18px;
+  }
+}
+
+.secondary-body {
+  font-family: "Roboto";
+  font-weight: 300;
+  @include mobile-only {
+    font-size: 14px;
+  }
+  @include tablet-portrait-up {
+    font-size: 15px;
+  }
+  @include desktop-up {
+    font-size: 16px;
+  }
+}
+
+button {
+  font-family: "Roboto";
+  font-weight: 700;
+  text-transform: uppercase;
+  @include mobile-only {
+    font-size: 14px;
+    letter-spacing: 0.85px;
+  }
+  @include tablet-portrait-up {
+    font-size: 15px;
+    letter-spacing: 0.9px;
+  }
+  @include desktop-up {
+    font-size: 16px;
+    letter-spacing: 1px;
+  }
+}
+
+.tertiary-body,
+caption {
+  font-family: "Roboto";
+  font-weight: 300;
+  @include mobile-only {
+    font-size: 13px;
+  }
+  @include tablet-portrait-up {
+    font-size: 13px;
+  }
+  @include desktop-up {
+    font-size: 14px;
+  }
+}
+
+.overline {
+  font-family: "Roboto";
+  font-weight: 500;
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 1.25px;
 }
 
 .icon {

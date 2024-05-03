@@ -1,5 +1,5 @@
 import Card from "../components/Card";
-import Portfolio from "./Portfolio";
+import Portfolio from "../pages/Portfolio";
 import MuiTable from "../components/Table";
 import ReportsList from "../components/ReportsList";
 import manHangingPaintingImage from "../assets/man-hanging-painting.svg";
@@ -10,7 +10,7 @@ import { upcomingReports } from "../api/api";
 function Dashboard() {
   return (
     <>
-      <h1>My Portfolio</h1>
+      <h1 className="title">My Portfolio</h1>
       <div className="card-container">
         <Card
           imgSrc={manHangingPaintingImage}

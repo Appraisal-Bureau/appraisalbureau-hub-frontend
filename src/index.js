@@ -11,7 +11,9 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <AuthProvider>
-      <BrowserRouter>{getToken() ? <App /> : <Login />}</BrowserRouter>
+      <BrowserRouter>
+        {/* getToken() ? <App /> : <Login /> */ <App />}
+      </BrowserRouter>
     </AuthProvider>
   </React.StrictMode>
 );

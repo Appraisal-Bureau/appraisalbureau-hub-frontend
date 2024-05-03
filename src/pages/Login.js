@@ -82,6 +82,7 @@ const Login = () => {
                   {
                     required: true,
                     type: "email",
+                    message: "Email is invalid",
                   },
                 ]}
               >

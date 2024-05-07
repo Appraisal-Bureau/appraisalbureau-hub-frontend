@@ -10,15 +10,13 @@ import {
   Spin,
   Typography,
 } from "antd";
-import React, { Fragment, useState } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
-import useScreenSize from "../hooks/useScreenSize";
 import { API } from "../constants";
 import { setToken } from "../helpers/auth.helpers";
 
 const Register = () => {
-  const { isDesktopView } = useScreenSize();
   const navigate = useNavigate();
   const { setUser } = useAuthContext();
   const [isLoading, setIsLoading] = useState(false);
@@ -51,10 +49,10 @@ const Register = () => {
   };
 
   return (
-    <Fragment>
+    <div className="login-container">
       <Row align="middle">
-        <Col span={isDesktopView ? 8 : 24} offset={isDesktopView ? 8 : 0}>
-          <Card title="Register">
+        <Col span={30}>
+          <Card title="Register" className="card-wrapper">
             {error ? (
               <Alert
                 className="alert_error"
@@ -107,7 +105,7 @@ const Register = () => {
           </Card>
         </Col>
       </Row>
-    </Fragment>
+    </div>
   );
 };
 

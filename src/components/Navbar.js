@@ -5,7 +5,6 @@ import logo from "../assets/logo.jpg";
 import { useNavigate, Link } from "react-router-dom";
 import { removeToken } from "../helpers/auth.helpers";
 import { useState } from "react";
-import IconButton from "@mui/material/IconButton";
 import Drawer from "@mui/material/Drawer";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";

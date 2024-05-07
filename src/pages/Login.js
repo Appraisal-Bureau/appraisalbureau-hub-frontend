@@ -1,7 +1,7 @@
 import { useNavigate, Link } from "react-router-dom";
 import useScreenSize from "../hooks/useScreenSize";
 import { useAuthContext } from "../context/AuthContext";
-import { useState, Fragment } from "react";
+import { useState } from "react";
 import {
   Alert,
   Button,
@@ -16,9 +16,9 @@ import {
 } from "antd";
 import { API } from "../constants";
 import { setToken } from "../helpers/auth.helpers";
+import "../styles/Login.scss";
 
 const Login = () => {
-  const { isDesktopView } = useScreenSize();
   const navigate = useNavigate();
   const { setUser } = useAuthContext();
   const [isLoading, setIsLoading] = useState(false);
@@ -56,10 +56,10 @@ const Login = () => {
   };
 
   return (
-    <Fragment>
+    <div className="login-container">
       <Row align="middle">
-        <Col span={isDesktopView ? 8 : 24} offset={isDesktopView ? 8 : 0}>
-          <Card title="Login">
+        <Col span={30}>
+          <Card title="Login" className="card-wrapper">
             {error ? (
               <Alert
                 className="alert_error"
@@ -113,7 +113,7 @@ const Login = () => {
           </Card>
         </Col>
       </Row>
-    </Fragment>
+    </div>
   );
 };
 

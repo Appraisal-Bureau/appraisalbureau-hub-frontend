@@ -1,13 +1,40 @@
 import Card from "../components/Card";
-import Portfolio from "../pages/Portfolio";
 import MuiTable from "../components/Table";
 import ReportsList from "../components/ReportsList";
+import PortfolioVisualization from "../components/PortfolioVisualization";
 import manHangingPaintingImage from "../assets/man-hanging-painting.svg";
 import womanWithHeartImage from "../assets/woman-with-heart.svg";
 import manSortingFilesImage from "../assets/man-sorting-files.svg";
-import { upcomingReports } from "../api/api";
+import { upcomingReports, portfolio } from "../api/api";
 
 function Dashboard() {
+  const calculatePortfolioTotal = (portfolio) => {
+    let total = 0;
+    for (let i = 0; i < portfolio.length; i++) {
+      total += portfolio[i].value;
+    }
+    return total;
+  };
+
+  const currencyFormatter = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 0,
+  });
+
+  const barColors = ["#0024B9", "#16BAC5", "#AB81CD", "#D81E5B"];
+
+  const portfolioDataWithColorKey = portfolio.map((item, index) => ({
+    color: (
+      <div
+        className="color-key"
+        style={{ backgroundColor: barColors[index % 4] }}
+      />
+    ),
+    name: item.name,
+    value: item.value,
+  }));
+
   return (
     <>
       <h1 className="title">My Portfolio</h1>
@@ -32,7 +59,20 @@ function Dashboard() {
         />
       </div>
 
-      <Portfolio />
+      <h4>Portfolio Value</h4>
+      <div className="big-number">
+        {currencyFormatter.format(calculatePortfolioTotal(portfolio))}
+      </div>
+      <PortfolioVisualization data={portfolio} barColors={barColors} />
+      <MuiTable
+        columns={[
+          { key: "color", width: "30px" },
+          { key: "name" },
+          { key: "value" },
+        ]}
+        data={portfolioDataWithColorKey}
+        hideHeader={true}
+      />
 
       <h4>Recent Activity</h4>
       <MuiTable

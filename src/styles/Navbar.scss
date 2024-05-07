@@ -13,6 +13,7 @@
 }
 
 .navbar-text {
+  color: $light-background-primary;
   padding-left: 40px;
   @include mobile-only {
     display: none;
@@ -29,6 +30,7 @@
 .right {
   margin-left: auto;
   padding-right: 70px;
+  margin-right: 5px;
 }
 
 .hamburger-menu {
@@ -37,4 +39,9 @@
   @include tablet-portrait-up {
     display: none;
   }
+}
+
+.MuiAccordion-root {
+  background-color: $light-nav-bar-background;
+  color: $light-background-primary;
 }

@@ -14,11 +14,18 @@
 
   &.selected {
     background-color: $light-brand-alternate;
-    color: $light-background-primary;
+
+    a {
+      color: $light-background-primary;
+    }
   }
 
   &:hover:not(.selected) {
     background-color: $light-background-secondary;
+
+    .hover-only {
+      display: block;
+    }
   }
 
   .hover-only {
@@ -26,8 +33,5 @@
     width: 24px;
     height: 24px;
     display: none;
-    &:hover {
-      display: block !important;
-    }
   }
 }

@@ -39,13 +39,13 @@ const Login = () => {
         setToken(data.jwt);
         setUser(data.user);
         message.success(`Welcome back ${data.user.username}!`);
-        navigate("/dashboard", { replace: true });
       }
     } catch (error) {
       console.error(error);
       setError(error?.message ?? "Something went wrong!");
     } finally {
       setIsLoading(false);
+      navigate("/dashboard", { replace: true });
     }
   };
 

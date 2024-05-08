@@ -10,9 +10,11 @@ import ListItemText from "@mui/material/ListItemText";
 import Box from "@mui/material/Box";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
+import { useAuthContext } from "../context/AuthContext";
 import AccordionDetails from "@mui/material/AccordionDetails";
 
 function Navbar() {
+  const { setUser } = useAuthContext();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const toggleDrawer = (open) => (event) => {
@@ -27,6 +29,7 @@ function Navbar() {
   const handleLogout = () => {
     console.log("Logging out...");
     removeToken();
+    setUser(null);
     navigate("/login", { replace: true });
   };
 

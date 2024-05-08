@@ -13,7 +13,11 @@ const Login = React.lazy(() => import("../pages/Login"));
 const Register = React.lazy(() => import("../pages/Register"));
 
 function App() {
+  const { isLoading } = useAuthContext();
   const wrapPrivateRoute = (element) => {
+    if (isLoading) {
+      return null;
+    }
     if (getToken()) {
       return element;
     } else {
@@ -43,10 +47,15 @@ function App() {
           }
         />
         <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
-        <Route element={<AuthorizedUserLayout />}>
-          <Route path="/dashboard" element={wrapPrivateRoute(<Dashboard />)} />
-          <Route path="/portfolio" element={wrapPrivateRoute(<Portfolio />)} />
+        <Route
+          path="/login"
+          element={
+            getToken() ? <Navigate to="/dashboard" replace /> : <Login />
+          }
+        />
+        <Route element={wrapPrivateRoute(<AuthorizedUserLayout />)}>
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/portfolio" element={<Portfolio />} />
         </Route>
       </Routes>
     </>

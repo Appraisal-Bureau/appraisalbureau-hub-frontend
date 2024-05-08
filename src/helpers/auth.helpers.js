@@ -1,15 +1,19 @@
-import { AUTH_TOKEN } from "../constants";
-
-export const getToken = () => {
-  return localStorage.getItem(AUTH_TOKEN);
-};
+import Cookies from "js-cookie";
 
 export const setToken = (token) => {
   if (token) {
-    localStorage.setItem(AUTH_TOKEN, token);
+    Cookies.set("jwt", token, { secure: true, sameSite: "strict" });
   }
 };
 
 export const removeToken = () => {
-  localStorage.removeItem(AUTH_TOKEN);
+  Cookies.remove("jwt");
+};
+
+export const getAllCookies = () => {
+  return Cookies.get();
+};
+
+export const getToken = () => {
+  return Cookies.get("jwt");
 };

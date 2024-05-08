@@ -13,10 +13,12 @@ import {
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
-import { API } from "../constants";
+import useScreenSize from "../hooks/useScreenSize";
 import { setToken } from "../helpers/auth.helpers";
+import apiClient from "../api/apiService";
 
 const Register = () => {
+  const { isDesktopView } = useScreenSize();
   const navigate = useNavigate();
   const { setUser } = useAuthContext();
   const [isLoading, setIsLoading] = useState(false);
@@ -24,14 +26,7 @@ const Register = () => {
   const onFinish = async (values) => {
     setIsLoading(true);
     try {
-      const response = await fetch(`${API}/auth/local/register`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(values),
-      });
-      const data = await response.json();
+      const { data } = await apiClient.post("auth/local/register", values);
       if (data?.error) {
         throw data?.error;
       } else {
@@ -51,8 +46,8 @@ const Register = () => {
   return (
     <div className="login-container">
       <Row align="middle">
-        <Col span={30}>
-          <Card title="Register" className="card-wrapper">
+        <Col span={isDesktopView ? 8 : 24} offset={isDesktopView ? 8 : 0}>
+          <Card title="Register">
             {error ? (
               <Alert
                 className="alert_error"
@@ -87,7 +82,7 @@ const Register = () => {
                 name="password"
                 rules={[{ required: true }]}
               >
-                <Input.Password placeholder="password" />
+                <Input.Password placeholder="Password" />
               </Form.Item>
               <Form.Item>
                 <Button

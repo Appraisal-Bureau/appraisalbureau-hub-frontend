@@ -14,11 +14,11 @@ import {
   Row,
   message,
 } from "antd";
-import { API } from "../constants";
 import { setToken } from "../helpers/auth.helpers";
-import "../styles/Login.scss";
+import apiClient from "../api/apiService";
 
 const Login = () => {
+  const { isDesktopView } = useScreenSize();
   const navigate = useNavigate();
   const { setUser } = useAuthContext();
   const [isLoading, setIsLoading] = useState(false);
@@ -31,19 +31,14 @@ const Login = () => {
         identifier: values.email,
         password: values.password,
       };
-      const response = await fetch(`${API}/auth/local`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(value),
-      });
-      const data = await response.json();
+      const { data } = await apiClient.post("auth/local", value);
+      console.log(data);
       if (data?.error) {
         throw data?.error;
       } else {
         setToken(data.jwt);
         setUser(data.user);
+        console.log(data.user);
         message.success(`Welcome back ${data.user.username}!`);
         navigate("/dashboard", { replace: true });
       }
@@ -58,7 +53,7 @@ const Login = () => {
   return (
     <div className="login-container">
       <Row align="middle">
-        <Col span={30}>
+        <Col span={isDesktopView ? 8 : 24} offset={isDesktopView ? 8 : 0}>
           <Card title="Login" className="card-wrapper">
             {error ? (
               <Alert

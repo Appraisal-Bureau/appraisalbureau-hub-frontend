@@ -7,14 +7,21 @@ import Register from "../pages/Register";
 import Portfolio from "../pages/Portfolio";
 import { Routes, Route, Navigate, Outlet } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
+import { useState, useEffect } from "react";
+import { getToken } from "../helpers/auth.helpers";
 
 function App() {
-  const { user } = useAuthContext();
+  const { isLoading } = useAuthContext();
+
+  if (isLoading) {
+    return <div style={{ fontSize: 72 }}>UGLY LOADING DIV</div>;
+  }
 
   const wrapPrivateRoute = (element) => {
-    if (user) {
+    if (getToken()) {
       return element;
     } else {
+      console.log("no user");
       return <Navigate to="/login" replace />;
     }
   };
@@ -33,7 +40,7 @@ function App() {
         <Route
           path=""
           element={
-            user ? (
+            getToken() ? (
               <Navigate to="/dashboard" replace />
             ) : (
               <Navigate to="/login" replace />

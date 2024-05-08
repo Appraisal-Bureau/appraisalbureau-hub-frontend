@@ -1,7 +1,6 @@
 import "../styles/Navbar.scss";
 import { FiChevronDown, FiMenu } from "react-icons/fi";
 import logo from "../assets/logo.jpg";
-// import { useAuthContext } from "../context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
 import { removeToken } from "../helpers/auth.helpers";
 import { useState } from "react";
@@ -36,7 +35,7 @@ function Navbar() {
       <a href="/dashboard">
         <img className="logo" src={logo} alt="Appraisal Bureau Logo" />
       </a>
-      <span className="navbar-text">
+      <span className="navbar-text left">
         Caroline Taylor's Portfolios | My Portfolio
         <FiChevronDown className="icon" />
       </span>
@@ -51,13 +50,15 @@ function Navbar() {
           right: 0,
           top: 0,
         }}
-        className="navbar-text right"
+        className="right navbar-text"
       >
-        <AccordionSummary sx={{ minHeight: 0 }}>
+        <AccordionSummary sx={{ minHeight: 0 }} className="navbar-text">
           Caroline Taylor <FiChevronDown className="icon" />
         </AccordionSummary>
-        <AccordionDetails>
-          <span onClick={handleLogout}>Logout</span>
+        <AccordionDetails sx={{ padding: 0 }}>
+          <ListItemButton onClick={handleLogout}>
+            <ListItemText sx={{ fontFamily: "inherit" }}>Logout</ListItemText>
+          </ListItemButton>
         </AccordionDetails>
       </Accordion>
       <FiMenu
@@ -72,7 +73,7 @@ function Navbar() {
       >
         <Box
           sx={{
-            p: 5,
+            p: 2,
             height: 5,
           }}
         >

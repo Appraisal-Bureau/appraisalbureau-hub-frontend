@@ -1,38 +1,33 @@
+import React from "react";
 import "../styles/App.scss";
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
-import Dashboard from "../pages/Dashboard";
-import Login from "../pages/Login";
-import Register from "../pages/Register";
-import Portfolio from "../pages/Portfolio";
 import { Routes, Route, Navigate, Outlet } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
-import { useState, useEffect } from "react";
 import { getToken } from "../helpers/auth.helpers";
+import Page from "./Page";
+
+const Dashboard = React.lazy(() => import("../pages/Dashboard"));
+const Portfolio = React.lazy(() => import("../pages/Portfolio"));
+const Login = React.lazy(() => import("../pages/Login"));
+const Register = React.lazy(() => import("../pages/Register"));
 
 function App() {
-  const { isLoading } = useAuthContext();
-
-  if (isLoading) {
-    return <div style={{ fontSize: 72 }}>UGLY LOADING DIV</div>;
-  }
-
   const wrapPrivateRoute = (element) => {
     if (getToken()) {
       return element;
     } else {
-      console.log("no user");
       return <Navigate to="/login" replace />;
     }
   };
   const AuthorizedUserLayout = () => (
-    <div>
+    <Page>
       <Navbar />
       <Sidebar />
       <div className="content-container">
         <Outlet />
       </div>
-    </div>
+    </Page>
   );
   return (
     <>

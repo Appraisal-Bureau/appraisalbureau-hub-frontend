@@ -15,7 +15,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuthContext } from "../context/AuthContext";
 import useScreenSize from "../hooks/useScreenSize";
 import { setToken } from "../helpers/auth.helpers";
-import apiClient from "../api/apiService";
+import apiClient from "../services/apiService";
+import Page from "../components/Page";
 
 const Register = () => {
   const { isDesktopView } = useScreenSize();
@@ -44,7 +45,7 @@ const Register = () => {
   };
 
   return (
-    <div className="login-container">
+    <Page>
       <Row align="middle">
         <Col span={isDesktopView ? 8 : 24} offset={isDesktopView ? 8 : 0}>
           <Card title="Register">
@@ -100,7 +101,7 @@ const Register = () => {
           </Card>
         </Col>
       </Row>
-    </div>
+    </Page>
   );
 };
 

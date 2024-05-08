@@ -15,7 +15,8 @@ import {
   message,
 } from "antd";
 import { setToken } from "../helpers/auth.helpers";
-import apiClient from "../api/apiService";
+import apiClient from "../services/apiService";
+import Page from "../components/Page";
 
 const Login = () => {
   const { isDesktopView } = useScreenSize();
@@ -32,13 +33,11 @@ const Login = () => {
         password: values.password,
       };
       const { data } = await apiClient.post("auth/local", value);
-      console.log(data);
       if (data?.error) {
         throw data?.error;
       } else {
         setToken(data.jwt);
         setUser(data.user);
-        console.log(data.user);
         message.success(`Welcome back ${data.user.username}!`);
         navigate("/dashboard", { replace: true });
       }
@@ -51,7 +50,7 @@ const Login = () => {
   };
 
   return (
-    <div className="login-container">
+    <Page>
       <Row align="middle">
         <Col span={isDesktopView ? 8 : 24} offset={isDesktopView ? 8 : 0}>
           <Card title="Login" className="card-wrapper">
@@ -108,7 +107,7 @@ const Login = () => {
           </Card>
         </Col>
       </Row>
-    </div>
+    </Page>
   );
 };
 

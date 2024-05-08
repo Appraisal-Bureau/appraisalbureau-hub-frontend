@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { message } from "antd";
-import apiClient from "../api/apiService";
+import apiClient from "../services/apiService";
 import { ErrorBoundary } from "react-error-boundary";
 import { getToken } from "../helpers/auth.helpers";
 
@@ -24,7 +24,6 @@ const AuthProvider = ({ children }) => {
   };
 
   const handleUser = (user) => {
-    console.log("user data being set");
     setUserData(user);
   };
 

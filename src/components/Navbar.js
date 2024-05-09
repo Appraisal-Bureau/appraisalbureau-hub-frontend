@@ -54,9 +54,13 @@ function Navbar() {
           top: 0,
         }}
         className="right navbar-text"
+        id="user-dropdown"
       >
-        <AccordionSummary sx={{ minHeight: 0 }} className="navbar-text">
-          Caroline Taylor <FiChevronDown className="icon" />
+        <AccordionSummary sx={{ minHeight: 0 }}>
+          <span className="navbar-text">
+            Caroline Taylor
+            <FiChevronDown className="icon" />
+          </span>
         </AccordionSummary>
         <AccordionDetails sx={{ padding: 0 }}>
           <ListItemButton onClick={handleLogout}>

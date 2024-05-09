@@ -6,14 +6,12 @@
   display: block;
   border-radius: 4px;
 
-  img {
-    width: 20px;
-    height: 20px;
-    padding-right: 10px;
-  }
-
   &.selected {
     background-color: $light-brand-alternate;
+
+    svg path {
+      fill: white;
+    }
 
     a {
       color: $light-background-primary;
@@ -33,9 +31,5 @@
     width: 24px;
     height: 24px;
     display: none;
-  }
-
-  svg path {
-    fill: white;
   }
 }

@@ -6,7 +6,6 @@ import manHangingPaintingImage from "../assets/man-hanging-painting.svg";
 import womanWithHeartImage from "../assets/woman-with-heart.svg";
 import manSortingFilesImage from "../assets/man-sorting-files.svg";
 import { upcomingReports, portfolio } from "../api/api";
-import Page from "../components/Page";
 
 function Dashboard() {
   const calculatePortfolioTotal = (portfolio) => {

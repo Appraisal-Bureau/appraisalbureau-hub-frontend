@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { AuthContext } from "../context/AuthContext";
-import { message } from "antd";
-import apiClient from "../services/apiService";
-import { ErrorBoundary } from "react-error-boundary";
-import { getToken } from "../helpers/auth.helpers";
+import { message } from 'antd';
+import { AuthContext } from 'context/AuthContext';
+import { getToken } from 'helpers/auth.helpers';
+import React, { useEffect, useState } from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
+import apiClient from 'services/apiService';
 
 const AuthProvider = ({ children }) => {
   const [userData, setUserData] = useState();
@@ -13,11 +13,11 @@ const AuthProvider = ({ children }) => {
   const fetchLoggedInUser = async () => {
     setIsLoading(true);
     try {
-      const { data } = await apiClient.get("/users/me");
+      const { data } = await apiClient.get('/users/me');
       setUserData(data);
     } catch (error) {
       console.error(error);
-      message.error("Error while getting logged in user details");
+      message.error('Error while getting logged in user details');
     } finally {
       setIsLoading(false);
     }

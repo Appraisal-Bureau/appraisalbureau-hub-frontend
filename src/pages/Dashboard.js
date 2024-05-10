@@ -1,28 +1,21 @@
-import Card from "../components/Card";
-import MuiTable from "../components/Table";
-import ReportsList from "../components/ReportsList";
-import PortfolioVisualization from "../components/PortfolioVisualization";
-import manHangingPaintingImage from "../assets/man-hanging-painting.svg";
-import womanWithHeartImage from "../assets/woman-with-heart.svg";
-import manSortingFilesImage from "../assets/man-sorting-files.svg";
-import { upcomingReports, portfolio } from "../api/api";
+import { portfolio, upcomingReports } from 'api/api';
+import manHangingPaintingImage from 'assets/man-hanging-painting.svg';
+import manSortingFilesImage from 'assets/man-sorting-files.svg';
+import womanWithHeartImage from 'assets/woman-with-heart.svg';
+import Card from 'components/Card/Card';
+import PortfolioVisualization from 'components/PortfolioVisualization/PortfolioVisualization';
+import ReportsList from 'components/ReportsList/ReportsList';
+import MuiTable from 'components/Table/Table';
+import { calculatePortfolioTotal } from 'helpers/portfolio.helpers';
 
 function Dashboard() {
-  const calculatePortfolioTotal = (portfolio) => {
-    let total = 0;
-    for (let i = 0; i < portfolio.length; i++) {
-      total += portfolio[i].value;
-    }
-    return total;
-  };
-
-  const currencyFormatter = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
+  const currencyFormatter = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
     maximumFractionDigits: 0,
   });
 
-  const barColors = ["#0024B9", "#16BAC5", "#AB81CD", "#D81E5B"];
+  const barColors = ['#0024B9', '#16BAC5', '#AB81CD', '#D81E5B'];
 
   const portfolioDataWithColorKey = portfolio.map((item, index) => ({
     color: (
@@ -66,9 +59,9 @@ function Dashboard() {
       <PortfolioVisualization data={portfolio} barColors={barColors} />
       <MuiTable
         columns={[
-          { key: "color", width: "30px" },
-          { key: "name" },
-          { key: "value" },
+          { key: 'color', width: '30px' },
+          { key: 'name' },
+          { key: 'value' },
         ]}
         data={portfolioDataWithColorKey}
         hideHeader={true}
@@ -76,8 +69,8 @@ function Dashboard() {
 
       <h4>Recent Activity</h4>
       <MuiTable
-        columns={[{ key: "", header: "" }]}
-        data={["", "", "", "", ""]}
+        columns={[{ key: '', header: '' }]}
+        data={['', '', '', '', '']}
         hideHeader={false}
       />
 

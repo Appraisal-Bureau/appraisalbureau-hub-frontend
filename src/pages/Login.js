@@ -1,7 +1,3 @@
-import { useNavigate, Link } from "react-router-dom";
-import useScreenSize from "../hooks/useScreenSize";
-import { useAuthContext } from "../context/AuthContext";
-import { useState } from "react";
 import {
   Alert,
   Button,
@@ -9,21 +5,25 @@ import {
   Col,
   Form,
   Input,
+  Row,
   Spin,
   Typography,
-  Row,
   message,
-} from "antd";
-import { setToken } from "../helpers/auth.helpers";
-import apiClient from "../services/apiService";
-import Page from "../components/Page";
+} from 'antd';
+import Page from 'components/Page/Page';
+import { useAuthContext } from 'context/AuthContext';
+import { setToken } from 'helpers/auth.helpers';
+import useScreenSize from 'hooks/useScreenSize';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import apiClient from 'services/apiService';
 
 const Login = () => {
   const { isDesktopView } = useScreenSize();
   const navigate = useNavigate();
   const { setUser } = useAuthContext();
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
 
   const onFinish = async (values) => {
     setIsLoading(true);
@@ -32,7 +32,7 @@ const Login = () => {
         identifier: values.email,
         password: values.password,
       };
-      const { data } = await apiClient.post("auth/local", value);
+      const { data } = await apiClient.post('auth/local', value);
       if (data?.error) {
         throw data?.error;
       } else {
@@ -42,10 +42,10 @@ const Login = () => {
       }
     } catch (error) {
       console.error(error);
-      setError(error?.message ?? "Something went wrong!");
+      setError(error?.message ?? 'Something went wrong!');
     } finally {
       setIsLoading(false);
-      navigate("/dashboard", { replace: true });
+      navigate('/dashboard', { replace: true });
     }
   };
 
@@ -60,7 +60,7 @@ const Login = () => {
                 message={error}
                 type="error"
                 closable
-                afterClose={() => setError("")}
+                afterClose={() => setError('')}
               />
             ) : null}
             <Form
@@ -75,8 +75,8 @@ const Login = () => {
                 rules={[
                   {
                     required: true,
-                    type: "email",
-                    message: "Email is invalid",
+                    type: 'email',
+                    message: 'Email is invalid',
                   },
                 ]}
               >

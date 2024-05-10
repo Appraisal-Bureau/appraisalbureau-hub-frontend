@@ -1,20 +1,20 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
 const useScreenSize = () => {
   const [isDesktopView, setDesktopView] = useState(true);
   const [screenWidth, setScreenWidth] = useState(0);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
+    if (typeof window !== 'undefined') {
       const handleResize = () => {
         setScreenWidth(window.innerWidth);
       };
 
-      window.addEventListener("resize", handleResize);
+      window.addEventListener('resize', handleResize);
 
       handleResize();
 
-      return () => window.removeEventListener("resize", handleResize);
+      return () => window.removeEventListener('resize', handleResize);
     }
   }, []);
 

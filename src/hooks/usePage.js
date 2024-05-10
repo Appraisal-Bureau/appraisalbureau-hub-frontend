@@ -1,5 +1,5 @@
-import { useCallback, useContext } from "react";
-import { FallbackContext } from "../context/FallbackContext";
+import { FallbackContext } from 'context/FallbackContext';
+import { useCallback, useContext } from 'react';
 
 export const usePage = () => {
   const { updateFallback } = useContext(FallbackContext);
@@ -10,7 +10,7 @@ export const usePage = () => {
       }
       updateFallback(component);
     },
-    [updateFallback]
+    [updateFallback],
   );
 
   return { onLoad };

@@ -1,16 +1,16 @@
-import axios from "axios";
-import Cookies from "js-cookie";
+import axios from 'axios';
+import Cookies from 'js-cookie';
 
 const apiClient = axios.create({
-  baseURL: "http://localhost:1337/api/", //TEMPORARY until API is hosted online
+  baseURL: 'http://localhost:1337/api/', //TEMPORARY until API is hosted online
   headers: {
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
   },
 });
 
 apiClient.interceptors.request.use(
   (config) => {
-    const token = Cookies.get("jwt");
+    const token = Cookies.get('jwt');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -18,7 +18,7 @@ apiClient.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error);
-  }
+  },
 );
 
 export default apiClient;

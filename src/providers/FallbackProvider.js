@@ -1,5 +1,5 @@
-import { Suspense, useCallback, useMemo, useState } from "react";
-import { FallbackContext } from "../context/FallbackContext";
+import { FallbackContext } from 'context/FallbackContext';
+import { Suspense, useCallback, useMemo, useState } from 'react';
 
 export const FallbackProvider = ({ children }) => {
   const [fallback, setFallback] = useState(null);

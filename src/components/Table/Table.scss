@@ -1,0 +1,52 @@
+@import 'styles/variables';
+@import 'styles/mixins';
+
+.table {
+  width: 70%;
+  .table-row {
+    &:nth-of-type(odd) {
+      background-color: $light-table-row-primary;
+    }
+    &:nth-of-type(even) {
+      background-color: $light-table-row-secondary;
+    }
+    border-bottom: 1px solid white;
+    .table-cell {
+      &:first-of-type {
+        border-top-left-radius: 4px;
+        border-bottom-left-radius: 4px;
+      }
+      &:last-of-type {
+        border-top-right-radius: 4px;
+        border-bottom-right-radius: 4px;
+      }
+      border-bottom: 1px solid white;
+      &:first-child {
+        color: $light-brand-primary;
+        font-weight: 500;
+      }
+    }
+  }
+
+  .header {
+    color: white;
+    background-color: $light-table-header;
+  }
+
+  padding: 40px;
+  @include tablet-landscape-up {
+    margin-left: 40px;
+    display: inline-block;
+  }
+  @include mobile-only {
+    padding: 0;
+    margin-left: 20px;
+    display: block;
+  }
+
+  .table-row.header {
+    background-color: $light-table-header;
+    color: white;
+    font-weight: 500;
+  }
+}

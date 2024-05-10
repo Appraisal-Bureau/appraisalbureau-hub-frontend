@@ -1,0 +1,29 @@
+@import 'styles/variables';
+@import 'styles/mixins';
+
+.sidebar {
+  height: calc(100% - $nav-bar-height);
+  border-right: 0.5px solid $light-light-line;
+  width: $side-bar-width;
+  position: fixed;
+  left: 0;
+  top: $nav-bar-height;
+  display: block;
+  @include mobile-only {
+    display: none;
+  }
+  padding-top: $menu-padding;
+
+  .bottom-group {
+    bottom: 0px;
+    padding-bottom: $menu-padding;
+    position: absolute;
+    width: 100%;
+    margin-bottom: $menu-padding;
+  }
+
+  .divider {
+    width: calc(100% - 32px);
+    margin: 16px;
+  }
+}

@@ -1,0 +1,19 @@
+@import 'styles/variables';
+
+.reportsList {
+  padding-left: 40px;
+
+  .table {
+    padding: 4px 8px;
+    color: $light-background-primary !important;
+    width: 50%;
+  }
+
+  .big-number {
+    padding-left: 0;
+  }
+}
+
+.report-container {
+  padding-top: 30px;
+}

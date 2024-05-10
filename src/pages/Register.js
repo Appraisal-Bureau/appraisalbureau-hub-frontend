@@ -5,40 +5,40 @@ import {
   Col,
   Form,
   Input,
-  message,
   Row,
   Spin,
   Typography,
-} from "antd";
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useAuthContext } from "../context/AuthContext";
-import useScreenSize from "../hooks/useScreenSize";
-import { setToken } from "../helpers/auth.helpers";
-import apiClient from "../services/apiService";
-import Page from "../components/Page";
+  message,
+} from 'antd';
+import Page from 'components/Page/Page';
+import { useAuthContext } from 'context/AuthContext';
+import { setToken } from 'helpers/auth.helpers';
+import useScreenSize from 'hooks/useScreenSize';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import apiClient from 'services/apiService';
 
 const Register = () => {
   const { isDesktopView } = useScreenSize();
   const navigate = useNavigate();
   const { setUser } = useAuthContext();
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
   const onFinish = async (values) => {
     setIsLoading(true);
     try {
-      const { data } = await apiClient.post("auth/local/register", values);
+      const { data } = await apiClient.post('auth/local/register', values);
       if (data?.error) {
         throw data?.error;
       } else {
         setToken(data.jwt);
         setUser(data.user);
         message.success(`Welcome ${data.user.username}!`);
-        navigate("/dashboard", { replace: true });
+        navigate('/dashboard', { replace: true });
       }
     } catch (error) {
       console.error(error);
-      setError(error?.message ?? "Something went wrong!");
+      setError(error?.message ?? 'Something went wrong!');
     } finally {
       setIsLoading(false);
     }
@@ -55,7 +55,7 @@ const Register = () => {
                 message={error}
                 type="error"
                 closable
-                afterClose={() => setError("")}
+                afterClose={() => setError('')}
               />
             ) : null}
             <Form
@@ -67,7 +67,7 @@ const Register = () => {
               <Form.Item
                 label="Username"
                 name="username"
-                rules={[{ required: true, type: "string" }]}
+                rules={[{ required: true, type: 'string' }]}
               >
                 <Input placeholder="Username" />
               </Form.Item>
@@ -77,8 +77,8 @@ const Register = () => {
                 rules={[
                   {
                     required: true,
-                    type: "email",
-                    message: "Email is invalid",
+                    type: 'email',
+                    message: 'Email is invalid',
                   },
                 ]}
               >

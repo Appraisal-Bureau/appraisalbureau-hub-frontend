@@ -1,4 +1,4 @@
-import nProgress from "nprogress";
+import nProgress from 'nprogress';
 
 nProgress.configure({
   showSpinner: false,

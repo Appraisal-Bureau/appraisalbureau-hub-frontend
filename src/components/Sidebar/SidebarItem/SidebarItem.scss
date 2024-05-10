@@ -1,0 +1,35 @@
+@import 'styles/variables';
+
+.sidebar-item {
+  padding: 8px 4px 8px 16px;
+  margin: 0px 10px;
+  display: block;
+  border-radius: 4px;
+
+  &.selected {
+    background-color: $light-brand-alternate;
+
+    svg path {
+      fill: white;
+    }
+
+    a {
+      color: $light-background-primary;
+    }
+  }
+
+  &:hover:not(.selected) {
+    background-color: $light-background-secondary;
+
+    .hover-only {
+      display: block;
+    }
+  }
+
+  .hover-only {
+    float: right;
+    width: 24px;
+    height: 24px;
+    display: none;
+  }
+}

@@ -11,7 +11,7 @@ import './Sidebar.scss';
 
 function Sidebar() {
   return (
-    <div className="sidebar">
+    <div className="sidebar" data-testid="sidebar">
       <SidebarItem
         text="Dashboard"
         icon={Dashboard}

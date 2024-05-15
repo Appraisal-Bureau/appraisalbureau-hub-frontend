@@ -29,7 +29,7 @@ function App() {
     <Page>
       <Navbar />
       <Sidebar />
-      <div className="content-container">
+      <div className="content-container" data-testid="content-container">
         <Outlet />
       </div>
     </Page>

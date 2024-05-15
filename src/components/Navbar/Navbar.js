@@ -35,7 +35,7 @@ function Navbar() {
   };
 
   return (
-    <div className="navbar">
+    <div className="navbar" data-testid="navbar">
       <a href="/dashboard">
         <img className="logo" src={logo} alt="Appraisal Bureau Logo" />
       </a>

@@ -5,12 +5,14 @@ import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
+import ChevronDown from 'assets/icons/ChevronDown.svg';
 import logo from 'assets/logo.jpg';
 import { useAuthContext } from 'context/AuthContext';
 import { removeToken } from 'helpers/auth.helpers';
 import { useState } from 'react';
-import { FiChevronDown, FiMenu } from 'react-icons/fi';
+import { FiMenu } from 'react-icons/fi';
 import { Link, useNavigate } from 'react-router-dom';
+import { ReactSVG } from 'react-svg';
 
 import './Navbar.scss';
 
@@ -41,7 +43,7 @@ function Navbar() {
       </a>
       <span className="navbar-text left">
         Caroline Taylor's Portfolios | My Portfolio
-        <FiChevronDown className="icon" />
+        <ReactSVG src={ChevronDown} className="icon" />
       </span>
       <Accordion
         disableGutters
@@ -60,7 +62,7 @@ function Navbar() {
         <AccordionSummary sx={{ minHeight: 0 }}>
           <span className="navbar-text">
             Caroline Taylor
-            <FiChevronDown className="icon" />
+            <ReactSVG src={ChevronDown} className="icon" />
           </span>
         </AccordionSummary>
         <AccordionDetails sx={{ padding: 0 }}>

@@ -1,4 +1,4 @@
-import { FiChevronRight } from 'react-icons/fi';
+import ChevronRight from 'assets/icons/ChevronRight.svg';
 import { Link, useLocation } from 'react-router-dom';
 import { ReactSVG } from 'react-svg';
 
@@ -19,7 +19,7 @@ function SidebarItem({ text, icon, linkDestination }) {
       <Link to={linkDestination}>
         <ReactSVG src={icon} className="icon" />
         <span>{text}</span>
-        <FiChevronRight className="hover-only icon" />
+        <ReactSVG src={ChevronRight} className="hover-only icon" />
       </Link>
     </div>
   );

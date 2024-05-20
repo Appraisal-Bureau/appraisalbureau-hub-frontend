@@ -21,12 +21,10 @@ describe('MuiTable Component', () => {
       <MuiTable columns={mockColumns} data={mockData} hideHeader={false} />,
     );
 
-    // Check if table header is rendered
     mockColumns.forEach((column) => {
       expect(screen.getByText(column.header)).toBeInTheDocument();
     });
 
-    // Check if table data is rendered
     mockData.forEach((row) => {
       expect(screen.getByText(row.title)).toBeInTheDocument();
       expect(screen.getByText(row.artist)).toBeInTheDocument();
@@ -41,12 +39,10 @@ describe('MuiTable Component', () => {
       <MuiTable columns={mockColumns} data={mockData} hideHeader={true} />,
     );
 
-    // Check if table header is not rendered
     mockColumns.forEach((column) => {
       expect(screen.queryByText(column.header)).not.toBeInTheDocument();
     });
 
-    // Check if table data is still rendered
     mockData.forEach((row) => {
       expect(screen.getByText(row.title)).toBeInTheDocument();
       expect(screen.getByText(row.artist)).toBeInTheDocument();

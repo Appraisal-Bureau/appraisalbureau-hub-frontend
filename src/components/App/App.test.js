@@ -2,8 +2,8 @@ import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
 import { MemoryRouter } from 'react-router-dom';
+import 'tests/setupTests.js';
 
-import '../../tests/setupTests.js';
 import App from './App';
 
 describe('App Component', () => {

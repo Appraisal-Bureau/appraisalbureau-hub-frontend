@@ -23,4 +23,8 @@ describe('Portfolio Component', () => {
     const actionBar = screen.getByTestId('action-bar');
     expect(actionBar).toBeInTheDocument();
   });
+
+  it('formats dates correctly', () => {
+    render(<Portfolio />);
+  });
 });

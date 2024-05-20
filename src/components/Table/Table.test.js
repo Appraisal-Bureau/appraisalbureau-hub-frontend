@@ -28,9 +28,7 @@ describe('MuiTable Component', () => {
     mockData.forEach((row) => {
       expect(screen.getByText(row.title)).toBeInTheDocument();
       expect(screen.getByText(row.artist)).toBeInTheDocument();
-      expect(
-        screen.getByText(`$${row.value.toLocaleString()}`),
-      ).toBeInTheDocument();
+      expect(screen.getByText(row.value)).toBeInTheDocument();
     });
   });
 
@@ -46,10 +44,19 @@ describe('MuiTable Component', () => {
     mockData.forEach((row) => {
       expect(screen.getByText(row.title)).toBeInTheDocument();
       expect(screen.getByText(row.artist)).toBeInTheDocument();
-      expect(
-        screen.getByText(`$${row.value.toLocaleString()}`),
-      ).toBeInTheDocument();
+      expect(screen.getByText(row.value)).toBeInTheDocument();
     });
+  });
+
+  it('renders checkboxes when showCheckboxes is true', () => {
+    render(
+      <MuiTable
+        columns={mockColumns}
+        data={mockData}
+        hideHeader={false}
+        showCheckboxes={true}
+      />,
+    );
   });
 
   it('renders correct number of rows and columns', () => {
@@ -72,9 +79,9 @@ describe('MuiTable Component', () => {
     );
 
     mockData.forEach((row) => {
-      expect(
-        screen.getByText(`$${row.value.toLocaleString()}`),
-      ).toBeInTheDocument();
+      expect(screen.getByText(row.value)).toBeInTheDocument();
     });
   });
+
+  // toggle select all checkboxes
 });

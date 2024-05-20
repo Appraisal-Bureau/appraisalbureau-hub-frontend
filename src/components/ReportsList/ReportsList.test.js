@@ -10,13 +10,13 @@ jest.mock('components/DateWidget/DateWidget', () => () => (
 jest.mock('components/Table/Table', () => ({ columns, data, hideHeader }) => (
   <table data-testid="mui-table">
     <thead>
-      {!hideHeader && (
+      {!hideHeader ? (
         <tr>
           {columns.map((col) => (
             <th key={col.key}>{col.header}</th>
           ))}
         </tr>
-      )}
+      ) : null}
     </thead>
     <tbody>
       {data.map((row, index) => (

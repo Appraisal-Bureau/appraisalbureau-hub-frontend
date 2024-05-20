@@ -2,7 +2,6 @@
 @import 'styles/mixins';
 
 .table {
-  width: 70%;
   .table-row {
     &:nth-of-type(odd) {
       background-color: $light-table-row-primary;
@@ -31,6 +30,14 @@
   .header {
     color: white;
     background-color: $light-table-header;
+
+    .MuiCheckbox-root {
+      color: white;
+    }
+  }
+
+  .MuiCheckbox-root {
+    margin-top: 5px;
   }
 
   padding: 40px;

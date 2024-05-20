@@ -1,13 +1,14 @@
-import { FiPlus } from 'react-icons/fi';
+import Add from 'assets/icons/Add.svg';
+import { ReactSVG } from 'react-svg';
 
 import './AddButton.scss';
 
 function AddButton({ text }) {
   return (
     <div className="actionButton addButton">
-      <p>
-        {text} <FiPlus className="icon" />
-      </p>
+      <span>
+        {text} <ReactSVG src={Add} className="icon" />
+      </span>
     </div>
   );
 }

@@ -10,6 +10,10 @@
   color: $light-background-primary;
   display: flex;
   align-items: center;
+
+  svg path {
+    fill: white;
+  }
 }
 
 .left {
@@ -47,4 +51,9 @@
   background-color: $light-nav-bar-background;
   color: $light-background-primary;
   box-shadow: none;
+
+  .MuiAccordionSummary-content {
+    margin-bottom: 0;
+    margin-top: 9px;
+  }
 }

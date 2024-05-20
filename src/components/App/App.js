@@ -8,10 +8,10 @@ import { Navigate, Outlet, Route, Routes } from 'react-router-dom';
 
 import './App.scss';
 
-const Dashboard = React.lazy(() => import('pages/Dashboard'));
-const Portfolio = React.lazy(() => import('pages/Portfolio'));
-const Login = React.lazy(() => import('pages/Login'));
-const Register = React.lazy(() => import('pages/Register'));
+const Dashboard = React.lazy(() => import('pages/Dashboard/Dashboard'));
+const Portfolio = React.lazy(() => import('pages/Portfolio/Portfolio'));
+const Login = React.lazy(() => import('pages/Login/Login'));
+const Register = React.lazy(() => import('pages/Register/Register'));
 
 function App() {
   const { isLoading } = useAuthContext();

@@ -1,12 +1,10 @@
-import { act } from 'react-dom/test-utils';
+import '@testing-library/jest-dom';
 
-global.matchMedia =
-  global.matchMedia ||
+window.matchMedia =
+  window.matchMedia ||
   function () {
     return {
       addListener: jest.fn(),
       removeListener: jest.fn(),
     };
   };
-
-global.window = { location: { pathname: null } };

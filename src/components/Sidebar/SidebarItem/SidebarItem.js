@@ -7,12 +7,15 @@ import './SidebarItem.scss';
 function SidebarItem({ text, icon, linkDestination }) {
   let currentLocation = useLocation().pathname.substring(1);
   const indexOfSlash = currentLocation.indexOf('/');
-  if (indexOfSlash) {
+  if (indexOfSlash >= 0) {
     currentLocation = currentLocation.split('/').pop();
   }
   const isActive = currentLocation === linkDestination;
   return (
-    <div className={`sidebar-item ${isActive ? 'selected' : ''}`}>
+    <div
+      data-testid="sidebar-item"
+      className={`sidebar-item ${isActive ? 'selected' : ''}`}
+    >
       <Link to={linkDestination}>
         <ReactSVG src={icon} className="icon" />
         <span>{text}</span>

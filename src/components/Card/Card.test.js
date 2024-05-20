@@ -1,7 +1,6 @@
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import React from 'react';
-import { act } from 'react-dom/test-utils';
 
 import Card from './Card';
 
@@ -14,9 +13,7 @@ describe('Card Component', () => {
   };
 
   test('should render the Card component with correct content', async () => {
-    act(() => {
-      render(<Card {...mockProps} />);
-    });
+    render(<Card {...mockProps} />);
     const imgElement = await screen.findByAltText(mockProps.imgAltText);
     const bodyElement = await screen.findByText(mockProps.bodyText);
     const actionButtonElement = await screen.findByText(

@@ -4,7 +4,7 @@ import './PortfolioVisualization.scss';
 
 function PortfolioVisualization({ data, barColors }) {
   return (
-    <div className="portfolioVis">
+    <div className="portfolioVis" data-testid="portfolio-visualization">
       {data.map((item, index) => (
         <Tooltip
           key={index}
@@ -14,6 +14,7 @@ function PortfolioVisualization({ data, barColors }) {
         >
           <div
             className="bar"
+            data-testid="portfolio-bar"
             style={{
               width: item.value,
               backgroundColor: barColors[index % 4],

@@ -41,7 +41,7 @@ const Login = () => {
         message.success(`Welcome back ${data.user.username}!`);
       }
     } catch (error) {
-      console.error(error);
+      //console.error(error);
       setError(error?.message ?? 'Something went wrong!');
     } finally {
       setIsLoading(false);

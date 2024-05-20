@@ -1,4 +1,4 @@
-const config = {
+module.exports = {
   collectCoverage: true,
   coverageReporters: ['lcov', 'text', 'html'],
   transform: {
@@ -11,7 +11,5 @@ const config = {
     '\\.(css|scss)$': 'identity-obj-proxy',
     '^axios$': 'axios/dist/node/axios.cjs',
   },
-  setupFilesAfterEnv: ['tests/setupTests.js'],
+  setupFilesAfterEnv: ['<rootDir>/src/tests/setupTests.js'],
 };
-
-export default config;

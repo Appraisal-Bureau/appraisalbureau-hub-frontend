@@ -11,5 +11,6 @@ module.exports = {
     '\\.(css|scss)$': 'identity-obj-proxy',
     '^axios$': 'axios/dist/node/axios.cjs',
   },
+  rootDir: './',
   setupFilesAfterEnv: ['<rootDir>/src/tests/setupTests.js'],
 };

@@ -1,13 +1,14 @@
-import { FiChevronRight } from 'react-icons/fi';
+import ChevronRight from 'assets/icons/ChevronRight.svg';
+import { ReactSVG } from 'react-svg';
 
 import './ActionButton.scss';
 
 function ActionButton({ text }) {
   return (
     <div className="actionButton">
-      <p>
-        {text} <FiChevronRight className="icon" />
-      </p>
+      <span>
+        {text} <ReactSVG src={ChevronRight} className="icon" />
+      </span>
     </div>
   );
 }

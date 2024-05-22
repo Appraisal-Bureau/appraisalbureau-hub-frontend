@@ -26,6 +26,7 @@ function Portfolio() {
         data={formattedPortfolio}
         hideHeader={false}
         showCheckboxes={true}
+        showPagination={true}
         style={{
           padding: '4px 8px',
           tableLayout: 'fixed',

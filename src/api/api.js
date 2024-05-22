@@ -115,7 +115,6 @@ export const upcomingReports = [
 
 const exampleData = [
   {
-    title: 'Title',
     artist: 'Artist',
     collection: 'Collection',
     lastReport: '2023-12-12',
@@ -124,8 +123,8 @@ const exampleData = [
   },
 ];
 let fillerData = [];
-for (let i = 0; i < 10; i++) {
-  fillerData.push({ ...exampleData[0], id: i });
+for (let i = 0; i < 100; i++) {
+  fillerData.push({ ...exampleData[0], title: `Title ${i + 1}`, id: i });
 }
 export const portfolioData = fillerData;
 

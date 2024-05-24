@@ -70,6 +70,9 @@ function MuiTable({
     setSelected(newSelected);
   };
 
+  const emptyRows =
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
+
   const onSelectAllClick = (event) => {
     if (event.target.checked) {
       const newSelected = data.map((n) => n.id);
@@ -165,6 +168,15 @@ function MuiTable({
               </TableRow>
             );
           })}
+          {emptyRows > 0 && (
+            <TableRow
+              style={{
+                height: 43 * emptyRows,
+              }}
+            >
+              <TableCell colSpan={columns.length + 1} />
+            </TableRow>
+          )}
         </TableBody>
         {showPagination && (
           <TableFooter>

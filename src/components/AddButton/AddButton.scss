@@ -2,4 +2,12 @@
 
 .addButton {
   background-color: $light-brand-primary;
+  color: white;
+  .icon {
+    svg fill {
+      color: white;
+    }
+  }
+  text-transform: uppercase;
+  font-weight: 700;
 }

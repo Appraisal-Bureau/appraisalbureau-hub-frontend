@@ -1,13 +1,14 @@
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
-
-import ActionBar from './ActionBar.test';
+import { portfolioData } from 'api/api.js';
 import ActionButton from 'components/ActionButton/ActionButton';
 
+import ActionBar from './ActionBar.js';
+
 const mockProps = {
-  text: 'Search portfolio',
-  filterOptions: {},
-  actionButtons: [<ActionButton text="Add Artwork" />]
+  searchText: 'Search portfolio',
+  searchOptions: portfolioData,
+  actionButtons: [<ActionButton key={1} text="Add Artwork" />],
 };
 
 describe('Action Bar Component', () => {
@@ -16,16 +17,16 @@ describe('Action Bar Component', () => {
   });
 
   it('renders the ActionBar component correctly', () => {
-    render(<ActionBar {...mockProps, showViewButtons=true} />);
+    render(<ActionBar {...mockProps} showViewButtons={false} />);
 
-    const searchBar = screen.getAllByPlaceholderText('Search portfolio');
+    const searchBar = screen.getByLabelText('Search portfolio');
     expect(searchBar).toBeInTheDocument();
   });
 
-  it('does not display view buttons when showViewButtons is false', () => {
-    render (<ActionBar {...mockProps, showViewButtons=false} />);
+  it('displays view buttons when showViewButtons is true', () => {
+    render(<ActionBar {...mockProps} showViewButtons={true} />);
     // view buttons should be null
-  })
+  });
 
   it('changes view button style when clicked', () => {
     // selected view should be blue

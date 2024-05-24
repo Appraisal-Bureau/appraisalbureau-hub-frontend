@@ -1,5 +1,4 @@
 import {
-  Box,
   Checkbox,
   Table,
   TableBody,
@@ -8,10 +7,11 @@ import {
   TableHead,
   TablePagination,
   TableRow,
-  TableSortLabel,
 } from '@mui/material';
-import { visuallyHidden } from '@mui/utils';
+import SortAscending from 'assets/icons/SortAscending.svg';
+import SortDescending from 'assets/icons/SortDescending.svg';
 import React, { useMemo, useState } from 'react';
+import { ReactSVG } from 'react-svg';
 
 import './Table.scss';
 
@@ -21,7 +21,6 @@ function MuiTable({
   hideHeader,
   showCheckboxes,
   showPagination,
-  enableSort,
 }) {
   const [selected, setSelected] = useState([]);
   const [page, setPage] = useState(0);
@@ -50,6 +49,10 @@ function MuiTable({
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
+  };
+
+  const createSortHandler = (property) => (event) => {
+    handleRequestSort(event, property);
   };
 
   const toggleRowSelect = (id) => {
@@ -94,19 +97,24 @@ function MuiTable({
   const visibleRows = useMemo(
     () =>
       data
-        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-        .sort(getComparator(order, orderBy)),
+        .sort(getComparator(order, orderBy))
+        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
     [data, page, rowsPerPage, order, orderBy],
   );
 
   return (
     <div className="table">
-      <Table sx={{ minWidth: 400, tableLayout: 'fixed' }}>
+      <Table
+        sx={{
+          minWidth: 600,
+          tableLayout: 'fixed',
+        }}
+      >
         {!hideHeader && (
           <TableHead>
             <TableRow className="header">
-              {showCheckboxes ? (
-                <TableCell className="table-cell">
+              {showCheckboxes && (
+                <TableCell className="table-cell" padding="checkbox">
                   <Checkbox
                     indeterminate={
                       selected.length > 0 && selected.length < data.length
@@ -116,27 +124,27 @@ function MuiTable({
                     inputProps={{ 'aria-label': 'select all' }}
                   />
                 </TableCell>
-              ) : null}
+              )}
               {columns.map((column) => (
                 <TableCell
                   sx={{ color: 'white' }}
                   className="table-cell"
                   key={column.key}
+                  sortDirection={
+                    column.enableSort &&
+                    (orderBy === column.key ? order : false)
+                  }
+                  onClick={
+                    column.enableSort ? createSortHandler(column.key) : null
+                  }
                 >
-                  <TableSortLabel
-                    active={orderBy === column.id}
-                    direction={orderBy === column.id ? order : 'asc'}
-                    onClick={enableSort ? handleRequestSort(column.id) : null}
-                  >
-                    {column.header}
-                    {orderBy === column.id ? (
-                      <Box component="span" sx={visuallyHidden}>
-                        {order === 'desc'
-                          ? 'sorted descending'
-                          : 'sorted ascending'}
-                      </Box>
-                    ) : null}
-                  </TableSortLabel>
+                  {column.header}
+                  {column.enableSort && orderBy === column.key ? (
+                    <ReactSVG
+                      className="icon"
+                      src={order === 'desc' ? SortDescending : SortAscending}
+                    />
+                  ) : null}
                 </TableCell>
               ))}
             </TableRow>
@@ -161,8 +169,11 @@ function MuiTable({
                   <TableCell
                     className="table-cell"
                     key={`${rowIndex}-${column.key}`}
+                    padding={column.key === 'color' ? 'checkbox' : 'normal'}
                   >
-                    {row[column.key]}
+                    {column.formatFn
+                      ? column.formatFn(row[column.key])
+                      : row[column.key]}
                   </TableCell>
                 ))}
               </TableRow>

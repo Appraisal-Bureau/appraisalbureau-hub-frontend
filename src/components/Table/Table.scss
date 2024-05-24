@@ -34,6 +34,12 @@
     .MuiCheckbox-root {
       color: white;
     }
+
+    .MuiTableCell-head .icon {
+      svg path {
+        fill: white;
+      }
+    }
   }
 
   padding: 40px;

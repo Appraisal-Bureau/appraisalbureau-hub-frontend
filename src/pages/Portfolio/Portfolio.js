@@ -6,12 +6,6 @@ import { formatDate, formatMoney } from 'helpers/portfolio.helpers';
 import './Portfolio.scss';
 
 function Portfolio() {
-  const formattedPortfolio = portfolioData.map((item) => ({
-    ...item,
-    lastReport: formatDate(item.lastReport),
-    dateAcquired: formatDate(item.dateAcquired),
-    value: formatMoney(item.value),
-  }));
   return (
     <div id="portfolio">
       <h1 className="title">My Portfolio</h1>
@@ -21,11 +15,26 @@ function Portfolio() {
           { key: 'title', header: 'Title', enableSort: false },
           { key: 'artist', header: 'Artist', enableSort: false },
           { key: 'collection', header: 'Collection', enableSort: false },
-          { key: 'lastReport', header: 'Last Report', enableSort: true },
-          { key: 'dateAcquired', header: 'Date Acquired', enableSort: true },
-          { key: 'value', header: 'Value', enableSort: true },
+          {
+            key: 'lastReport',
+            header: 'Last Report',
+            enableSort: true,
+            formatFn: formatDate,
+          },
+          {
+            key: 'dateAcquired',
+            header: 'Date Acquired',
+            enableSort: true,
+            formatFn: formatDate,
+          },
+          {
+            key: 'value',
+            header: 'Value',
+            enableSort: true,
+            formatFn: formatMoney,
+          },
         ]}
-        data={formattedPortfolio}
+        data={portfolioData}
         hideHeader={false}
         showCheckboxes={true}
         showPagination={true}

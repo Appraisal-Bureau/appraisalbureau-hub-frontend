@@ -8,7 +8,7 @@ import ReportsList from 'components/ReportsList/ReportsList';
 import MuiTable from 'components/Table/Table';
 import {
   calculatePortfolioTotal,
-  currencyFormatter,
+  formatMoney,
 } from 'helpers/portfolio.helpers';
 import 'pages/Dashboard/Dashboard.scss';
 
@@ -23,7 +23,7 @@ function Dashboard() {
       />
     ),
     name: item.name,
-    value: currencyFormatter.format(item.value),
+    value: formatMoney(item.value),
   }));
 
   return (
@@ -52,15 +52,11 @@ function Dashboard() {
 
       <h4>Portfolio Value</h4>
       <div className="big-number">
-        {currencyFormatter.format(calculatePortfolioTotal(portfolio))}
+        {formatMoney(calculatePortfolioTotal(portfolio))}
       </div>
       <PortfolioVisualization data={portfolio} barColors={barColors} />
       <MuiTable
-        columns={[
-          { key: 'color', width: '30px' },
-          { key: 'name' },
-          { key: 'value' },
-        ]}
+        columns={[{ key: 'color' }, { key: 'name' }, { key: 'value' }]}
         data={portfolioDataWithColorKey}
         hideHeader={true}
       />

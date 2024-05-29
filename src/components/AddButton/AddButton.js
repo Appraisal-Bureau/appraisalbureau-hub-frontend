@@ -5,11 +5,9 @@ import './AddButton.scss';
 
 function AddButton({ text }) {
   return (
-    <div className="actionButton addButton">
-      <span>
-        {text} <ReactSVG src={Add} className="icon" />
-      </span>
-    </div>
+    <button className="actionButton addButton">
+      {text} <ReactSVG src={Add} className="icon" />
+    </button>
   );
 }
 

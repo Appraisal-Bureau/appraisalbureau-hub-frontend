@@ -1,5 +1,25 @@
+@import 'styles/mixins';
+@import 'styles/variables';
+
 .action-bar {
+  height: 40px;
   display: flex;
-  width: 70%;
+  gap: 20px;
+  padding: 0px 40px 16px 40px;
   justify-content: space-between;
+
+  .left-group {
+    display: flex;
+    gap: 20px;
+    align-items: left;
+  }
+
+  .right-group {
+    display: flex;
+    gap: 20px;
+    align-items: right;
+    .view-buttons {
+      white-space: nowrap;
+    }
+  }
 }

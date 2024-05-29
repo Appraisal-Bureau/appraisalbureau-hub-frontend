@@ -114,8 +114,6 @@ h4 {
 
 button {
   font-family: 'Roboto';
-  font-weight: 700;
-  text-transform: uppercase;
   @include mobile-only {
     font-size: 14px;
     letter-spacing: 0.85px;

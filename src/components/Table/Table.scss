@@ -43,13 +43,9 @@
   }
 
   padding: 40px;
-  @include tablet-landscape-up {
-    margin-left: 40px;
-    display: inline-block;
-  }
+
   @include mobile-only {
     padding: 0;
-    margin-left: 20px;
     display: block;
   }
 

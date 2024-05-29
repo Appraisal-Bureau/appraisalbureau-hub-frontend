@@ -1,5 +1,15 @@
+@import 'styles/mixins';
+
 #dashboard {
   .table {
     width: 70%;
+
+    @include mobile-only {
+      margin-left: 20px;
+    }
+    @include tablet-landscape-up {
+      display: inline-block;
+      margin-left: 40px;
+    }
   }
 }

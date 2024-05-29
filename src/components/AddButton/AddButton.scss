@@ -3,11 +3,15 @@
 .addButton {
   background-color: $light-brand-primary;
   color: white;
+  display: inline-block;
+  white-space: nowrap;
+  height: 40px;
   .icon {
-    svg fill {
-      color: white;
+    svg path {
+      fill: white;
     }
   }
   text-transform: uppercase;
   font-weight: 700;
+  border-radius: 8px;
 }

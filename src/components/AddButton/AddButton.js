@@ -6,7 +6,7 @@ import './AddButton.scss';
 function AddButton({ text }) {
   return (
     <button className="actionButton addButton">
-      {text} <ReactSVG src={Add} className="icon" />
+      {text} <ReactSVG className="button-icon" src={Add} />
     </button>
   );
 }

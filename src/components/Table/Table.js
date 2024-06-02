@@ -8,9 +8,10 @@ import {
   TablePagination,
   TableRow,
 } from '@mui/material';
+import Sort from 'assets/icons/Sort.svg';
 import SortAscending from 'assets/icons/SortAscending.svg';
 import SortDescending from 'assets/icons/SortDescending.svg';
-import React, { useMemo, useState } from 'react';
+import React from 'react';
 import { ReactSVG } from 'react-svg';
 
 import './Table.scss';
@@ -21,34 +22,35 @@ function MuiTable({
   hideHeader,
   showCheckboxes,
   showPagination,
+  totalRows,
+  selectedRows,
+  setSelectedRows,
+  order,
+  setOrder,
+  orderBy,
+  setOrderBy,
+  page,
+  setPage,
+  rowsPerPage,
+  setRowsPerPage,
 }) {
-  const [selected, setSelected] = useState([]);
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(15);
-  const [order, setOrder] = useState('asc');
-  const [orderBy, setOrderBy] = useState(columns[0]);
-  const isSelected = (id) => selected.indexOf(id) !== -1;
-
-  const descendingComparator = (a, b, orderBy) => {
-    if (b[orderBy] < a[orderBy]) {
-      return -1;
-    }
-    if (b[orderBy] > a[orderBy]) {
-      return 1;
-    }
-    return 0;
-  };
-
-  const getComparator = (order, orderBy) => {
-    return order === 'desc'
-      ? (a, b) => descendingComparator(a, b, orderBy)
-      : (a, b) => -descendingComparator(a, b, orderBy);
+  const isSelected = (id) => {
+    console.log(selectedRows);
+    return selectedRows === null ? false : selectedRows.indexOf(id) !== -1;
   };
 
   const handleRequestSort = (event, property) => {
-    const isAsc = orderBy === property && order === 'asc';
-    setOrder(isAsc ? 'desc' : 'asc');
-    setOrderBy(property);
+    if (orderBy === property) {
+      if (order === 'asc') {
+        setOrder('desc');
+      } else if (order === 'desc') {
+        setOrderBy(null);
+        setOrder('asc');
+      }
+    } else {
+      setOrderBy(property);
+      setOrder('asc');
+    }
   };
 
   const createSortHandler = (property) => (event) => {
@@ -56,21 +58,21 @@ function MuiTable({
   };
 
   const toggleRowSelect = (id) => {
-    const selectedIndex = selected.indexOf(id);
+    const selectedIndex = selectedRows.indexOf(id);
     let newSelected = [];
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, id);
+      newSelected = newSelected.concat(selectedRows, id);
     } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
+      newSelected = newSelected.concat(selectedRows.slice(1));
+    } else if (selectedIndex === selectedRows.length - 1) {
+      newSelected = newSelected.concat(selectedRows.slice(0, -1));
     } else if (selectedIndex > 0) {
       newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1),
+        selectedRows.slice(0, selectedIndex),
+        selectedRows.slice(selectedIndex + 1),
       );
     }
-    setSelected(newSelected);
+    setSelectedRows(newSelected);
   };
 
   const emptyRows =
@@ -79,9 +81,9 @@ function MuiTable({
   const onSelectAllClick = (event) => {
     if (event.target.checked) {
       const newSelected = data.map((n) => n.id);
-      setSelected(newSelected);
+      setSelectedRows(newSelected);
     } else {
-      setSelected([]);
+      setSelectedRows([]);
     }
   };
 
@@ -93,14 +95,6 @@ function MuiTable({
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-
-  const visibleRows = useMemo(
-    () =>
-      data
-        .sort(getComparator(order, orderBy))
-        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
-    [data, page, rowsPerPage, order, orderBy],
-  );
 
   return (
     <div className="table">
@@ -117,9 +111,12 @@ function MuiTable({
                 <TableCell className="table-cell" padding="checkbox">
                   <Checkbox
                     indeterminate={
-                      selected.length > 0 && selected.length < data.length
+                      selectedRows.length > 0 &&
+                      selectedRows.length < data.length
                     }
-                    checked={data.length > 0 && selected.length === data.length}
+                    checked={
+                      data.length > 0 && selectedRows.length === data.length
+                    }
                     onClick={onSelectAllClick}
                     inputProps={{ 'aria-label': 'select all' }}
                   />
@@ -144,6 +141,8 @@ function MuiTable({
                       className="icon"
                       src={order === 'desc' ? SortDescending : SortAscending}
                     />
+                  ) : column.enableSort ? (
+                    <ReactSVG className="icon" src={Sort} />
                   ) : null}
                 </TableCell>
               ))}
@@ -151,31 +150,35 @@ function MuiTable({
           </TableHead>
         )}
         <TableBody>
-          {visibleRows.map((row, rowIndex) => {
-            const isItemSelected = isSelected(row.id);
-            const labelId = `table-checkbox-${rowIndex}`;
+          {data.map((row, rowIndex) => {
+            const columnsContent = columns.map((column) => (
+              <TableCell
+                className="table-cell"
+                key={`${rowIndex}-${column.key}`}
+                padding={column.key === 'color' ? 'checkbox' : 'normal'}
+              >
+                {column.formatFn
+                  ? column.formatFn(row[column.key])
+                  : row[column.key]}
+              </TableCell>
+            ));
             return (
               <TableRow key={rowIndex} className="table-row">
-                {showCheckboxes ? (
-                  <TableCell className="table-cell first-column" key={labelId}>
+                {showCheckboxes && (
+                  <TableCell
+                    className="table-cell first-column"
+                    key={`table-checkbox-${rowIndex}`}
+                  >
                     <Checkbox
                       onClick={() => toggleRowSelect(row.id)}
-                      checked={isItemSelected}
-                      inputProps={{ 'aria-label': labelId }}
+                      checked={isSelected(row.id)}
+                      inputProps={{
+                        'aria-label': `table-checkbox-${rowIndex}`,
+                      }}
                     />
                   </TableCell>
-                ) : null}
-                {columns.map((column) => (
-                  <TableCell
-                    className="table-cell"
-                    key={`${rowIndex}-${column.key}`}
-                    padding={column.key === 'color' ? 'checkbox' : 'normal'}
-                  >
-                    {column.formatFn
-                      ? column.formatFn(row[column.key])
-                      : row[column.key]}
-                  </TableCell>
-                ))}
+                )}
+                {columnsContent}
               </TableRow>
             );
           })}
@@ -193,11 +196,11 @@ function MuiTable({
           <TableFooter>
             <TableRow>
               <TablePagination
-                rowsPerPageOptions={[5, 10, 15, 20]}
+                rowsPerPageOptions={[15, 25, 50]}
                 page={page}
                 colSpan={columns.length + 1}
                 rowsPerPage={rowsPerPage}
-                count={data.length}
+                count={totalRows}
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
               />

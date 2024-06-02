@@ -5,8 +5,25 @@
   height: 40px;
   display: flex;
   gap: 20px;
-  padding: 0px 40px 16px 40px;
+  padding: 48px 40px 0px;
   justify-content: space-between;
+  white-space: nowrap;
+
+  .action-bar-button {
+    background-color: $light-background-primary;
+    border-radius: 8px;
+    padding: 0px 4px 0px 8px;
+    border: 0.5px solid $light-light-line;
+
+    &.grayed-out {
+      color: $light-light-line;
+      border: 0.5px solid $light-light-line;
+
+      svg path {
+        fill: $light-light-line;
+      }
+    }
+  }
 
   .left-group {
     display: flex;
@@ -14,12 +31,32 @@
     align-items: left;
   }
 
+  .icon {
+    padding-top: 3px;
+  }
+
   .right-group {
     display: flex;
     gap: 20px;
     align-items: right;
     .view-buttons {
-      white-space: nowrap;
+      button {
+        background-color: $light-background-primary;
+        height: 40px;
+        border: none;
+        border-radius: 4px;
+        padding: 4px 13px;
+        .svg {
+          width: 24px;
+          height: 24px;
+        }
+      }
+      .selected {
+        background-color: $light-brand-primary;
+        svg path {
+          fill: white;
+        }
+      }
     }
   }
 }

@@ -6,7 +6,9 @@
   display: inline-block;
   white-space: nowrap;
   height: 40px;
-  .icon {
+  .button-icon {
+    vertical-align: middle;
+    display: inline-block;
     svg path {
       fill: white;
     }

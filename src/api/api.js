@@ -113,7 +113,7 @@ export const upcomingReports = [
   },
 ];
 
-export const portfolioData = [
+export const portfolioTableData = [
   {
     id: 1,
     value: 350000,

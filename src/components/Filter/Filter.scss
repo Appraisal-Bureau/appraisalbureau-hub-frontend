@@ -1,3 +1,9 @@
+@import 'styles/variables';
+
 .filter {
-  padding-top: 40px;
+  padding: 24px 16px;
+  border-radius: 8px;
+  margin: 25px 40px 0px;
+  width: 50%;
+  background-color: $light-background-secondary;
 }

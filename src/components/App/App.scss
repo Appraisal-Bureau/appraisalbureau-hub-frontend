@@ -5,21 +5,9 @@
 .title {
   font-family: 'Playfair Display';
   font-weight: 500;
-  @include mobile-only {
-    font-size: 40px;
-    letter-spacing: 0.97px;
-    line-height: 45px;
-  }
-  @include tablet-portrait-up {
-    font-size: 45px;
-    letter-spacing: 1.1px;
-    line-height: 51px;
-  }
-  @include desktop-up {
-    font-size: 60px;
-    letter-spacing: 1.5px;
-    line-height: 68px;
-  }
+  font-size: 40px;
+  letter-spacing: 0.97px;
+  line-height: 45px;
 }
 
 h1 {

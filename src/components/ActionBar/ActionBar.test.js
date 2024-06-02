@@ -8,7 +8,7 @@ import ActionBar from './ActionBar.js';
 const mockProps = {
   searchText: 'Search portfolio',
   searchOptions: portfolioTableData,
-  actionButtons: [<ActionButton key={1} text="Add Artwork" />],
+  actionButtons: [<AddButton key={1} text="Add Artwork" />],
 };
 
 describe('Action Bar Component', () => {

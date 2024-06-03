@@ -35,7 +35,6 @@ function MuiTable({
   setRowsPerPage,
 }) {
   const isSelected = (id) => {
-    console.log(selectedRows);
     return selectedRows === null ? false : selectedRows.indexOf(id) !== -1;
   };
 

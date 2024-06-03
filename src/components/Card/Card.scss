@@ -15,7 +15,7 @@
 }
 
 .card-container {
-  width: 100%;
+  max-width: 70vw;
   display: inline-flex;
   @include mobile-only {
     display: inline-block;

@@ -542,6 +542,79 @@ export const portfolioTableData = [
   },
 ];
 
+export const savedFilters = [
+  {
+    id: 1,
+    label: 'Lisa',
+    value: {
+      artist: 'Lisa',
+    },
+  },
+  {
+    id: 2,
+    label: 'Blue',
+    value: {
+      title: 'Blue',
+    },
+  },
+  {
+    id: 3,
+    label: 'NYC',
+    value: {
+      collection: 'New York',
+    },
+  },
+];
+
+export const filterTypes = [
+  {
+    id: 'artist',
+    label: 'Artist',
+    value: 'artist',
+    options: [
+      {
+        id: 1,
+        label: 'A',
+        value: 'A',
+      },
+    ],
+  },
+  {
+    id: 'dateAcquired',
+    label: 'Date Acquired',
+    value: 'dateAcquired',
+    options: [
+      {
+        id: 1,
+        label: 'Before',
+        value: 'before',
+      },
+      {
+        id: 2,
+        label: 'After',
+        value: 'after',
+      },
+    ],
+  },
+  {
+    id: 'appraisedValue',
+    label: 'Appraised Value',
+    value: 'value',
+    options: [
+      {
+        id: 1,
+        label: 'Less than',
+        value: 'lessThan',
+      },
+      {
+        id: 2,
+        label: 'Greater than',
+        value: 'greaterThan',
+      },
+    ],
+  },
+];
+
 // Here is where we would define endpoints to perform the following:
 // get portfolio
 // get upcoming reports

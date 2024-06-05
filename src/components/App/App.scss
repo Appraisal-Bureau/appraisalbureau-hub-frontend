@@ -101,15 +101,7 @@ a {
 caption {
   font-family: 'Roboto';
   font-weight: 300;
-  @include mobile-only {
-    font-size: 13px;
-  }
-  @include tablet-portrait-up {
-    font-size: 13px;
-  }
-  @include desktop-up {
-    font-size: 14px;
-  }
+  font-size: 14px;
 }
 
 .overline {

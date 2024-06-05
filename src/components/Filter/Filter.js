@@ -149,17 +149,13 @@ function Filter({ filter, setFilter, updateFilter, columns }) {
   };
 
   const handleAddFilter = (event) => {
-    // iterate through the filter object
-    // update filter state w/ updateFilter
     updateFilter(addFilterType, {
       id: searchQuery,
       selector: dynamicFilter,
       query: searchQuery,
     });
-    console.log('id: ', searchQuery);
   };
 
-  //eslint-disable-next-line
   const handleClearFilter = () => {
     setFilter([]);
   };

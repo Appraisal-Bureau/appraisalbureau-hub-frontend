@@ -3,9 +3,9 @@ import { ReactSVG } from 'react-svg';
 
 import './AddButton.scss';
 
-function AddButton({ text }) {
+function AddButton({ text, onClick }) {
   return (
-    <button className="addButton">
+    <button className="addButton" onClick={onClick}>
       {text} <ReactSVG className="button-icon" src={Add} />
     </button>
   );

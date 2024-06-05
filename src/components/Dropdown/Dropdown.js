@@ -12,7 +12,9 @@ function Dropdown({ value, onChange, labelId, defaultText, options }) {
       value={value}
       displayEmpty
       onChange={onChange}
-      IconComponent={() => <ReactSVG src={ChevronDown} />}
+      IconComponent={() => (
+        <ReactSVG src={ChevronDown} style={{ paddingTop: 4 }} />
+      )}
     >
       <MenuItem key="default" value="">
         <span>{defaultText}</span>

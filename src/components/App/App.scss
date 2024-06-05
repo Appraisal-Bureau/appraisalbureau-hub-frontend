@@ -60,44 +60,20 @@ h4 {
   padding: 20px;
   margin: 0;
   font-family: 'Roboto';
-  @include mobile-only {
-    font-size: 20px;
-  }
-  @include tablet-portrait-up {
-    font-size: 22px;
-  }
-  @include desktop-up {
-    font-size: 24px;
-  }
+  font-size: 24px;
   font-weight: 400;
 }
 
 .primary-body {
   font-family: 'Roboto';
   font-weight: 300;
-  @include mobile-only {
-    font-size: 16px;
-  }
-  @include tablet-portrait-up {
-    font-size: 17px;
-  }
-  @include desktop-up {
-    font-size: 18px;
-  }
+  font-size: 18px;
 }
 
 .secondary-body {
   font-family: 'Roboto';
-  font-weight: 300;
-  @include mobile-only {
-    font-size: 14px;
-  }
-  @include tablet-portrait-up {
-    font-size: 15px;
-  }
-  @include desktop-up {
-    font-size: 16px;
-  }
+  font-weight: 400;
+  font-size: 16px;
 }
 
 button {
@@ -174,4 +150,14 @@ caption {
   height: 20px;
   border-radius: 50%;
   margin-left: 18px;
+}
+
+.notification-number {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
 }

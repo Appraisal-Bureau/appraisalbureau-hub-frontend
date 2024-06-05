@@ -4,4 +4,8 @@
   color: $light-brand-alternate;
   text-transform: uppercase;
   font-weight: 700;
+
+  svg path {
+    fill: currentColor;
+  }
 }

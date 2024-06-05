@@ -7,6 +7,9 @@ export const theme = createTheme({
         root: {
           borderRadius: 8,
         },
+        input: {
+          padding: 'inherit',
+        },
       },
     },
     MuiInputLabel: {
@@ -16,6 +19,18 @@ export const theme = createTheme({
             fontSize: 14,
             fontWeight: 300,
           },
+        },
+      },
+    },
+    MuiSelect: {
+      styleOverrides: {
+        root: {
+          '.MuiSelect-select.MuiSelect-outlined.MuiInputBase-input': {
+            paddingRight: 0,
+          },
+        },
+        select: {
+          padding: 0,
         },
       },
     },

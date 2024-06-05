@@ -13,14 +13,14 @@ import './Portfolio.scss';
 
 function Portfolio() {
   const [showFilter, setShowFilter] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const [filter, setFilter] = useState({
-    searchText: '',
-    title: '',
-    artist: '',
-    collection: '',
-    dateAcquired: null,
-    lastReport: null,
-    value: null,
+    title: [],
+    artist: [],
+    collection: [],
+    dateAcquired: [],
+    lastReport: [],
+    value: [],
   });
   const [selectedView, setSelectedView] = useState('list');
   const [selectedRows, setSelectedRows] = useState([]);
@@ -40,26 +40,30 @@ function Portfolio() {
   const updateFilter = (key, value) => {
     setFilter((prevFilter) => ({
       ...prevFilter,
-      [key]: value,
+      [key]: [...(prevFilter[key] || []), value],
     }));
   };
 
   const fetchPortfolioData = useCallback(async () => {
     setIsLoading(true);
     try {
-      /* const response = await apiClient.get('/items', {
-        params: {
-          sort: // order + orderBy,
-          filter: // filter,
-          pagination: {
-            page: page,
-            pageSize: rowsPerPage,
-            start: page * rowsPerPage,
-            limit: rowsPerPage,
-          },
-          fields: // implementation 
-        },
-      }); */
+      // var sortOrder = null;
+      // if (orderBy !== null) {
+      //   sortOrder = `${orderBy}:${order}`;
+      // }
+      // const response = await apiClient.get('/items', {
+      //   params: {
+      //     sort: sortOrder,
+      //     filter: // https://docs.strapi.io/dev-docs/api/rest/filters-locale-publication#filtering,
+      //     pagination: {
+      //       page: page,
+      //       pageSize: rowsPerPage,
+      //       start: page * rowsPerPage,
+      //       limit: rowsPerPage,
+      //     },
+      //     // Can optionally set fields param if too much unneeded data is being retrieved
+      //   },
+      // });
       // const result = await response.json();
       // setPortfolioData(result.data);
       setPortfolioData(portfolioTableData);
@@ -75,13 +79,13 @@ function Portfolio() {
   }, [filter, portfolioData, order, orderBy, page, rowsPerPage]);
 
   const fetchOptions = useCallback(async () => {
-    if (filter.searchText.length >= 2) {
+    if (searchQuery.length >= 2) {
       setIsLoading(true);
       try {
         /* const response = await apiClient.get('/items', {
         params: {
           filter: // filter,
-          fields: // implementation - title, artist, collection
+          fields: ['title', 'artist', 'collection']
         },
       }); */
         // const result = await response.json();
@@ -100,7 +104,7 @@ function Portfolio() {
 
         setSearchOptions(
           uniqueOptions.filter((option) =>
-            option.toLowerCase().includes(filter.searchText.toLowerCase()),
+            option.toLowerCase().includes(searchQuery.toLowerCase()),
           ),
         );
       } catch (error) {
@@ -112,7 +116,7 @@ function Portfolio() {
     } else {
       setSearchOptions([]);
     }
-  }, [filter]);
+  }, [searchQuery]);
 
   useEffect(() => {
     fetchPortfolioData();
@@ -123,10 +127,27 @@ function Portfolio() {
     setPage(0);
   }, [fetchOptions, filter]);
 
-  const buttonData = [
+  const cols = [
+    { key: 'title', header: 'Title', enableSort: false },
+    { key: 'artist', header: 'Artist', enableSort: false },
+    { key: 'collection', header: 'Collection', enableSort: false },
     {
-      id: 1,
-      text: 'Add Artwork',
+      key: 'lastReport',
+      header: 'Last Report',
+      enableSort: true,
+      formatFn: formatDate,
+    },
+    {
+      key: 'dateAcquired',
+      header: 'Date Acquired',
+      enableSort: true,
+      formatFn: formatDate,
+    },
+    {
+      key: 'value',
+      header: 'Value',
+      enableSort: true,
+      formatFn: formatMoney,
     },
   ];
 
@@ -138,44 +159,28 @@ function Portfolio() {
         onToggleFilter={toggleFilter}
         showFilter={showFilter}
         searchOptions={searchOptions}
-        updateFilter={updateFilter}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
         selectedRows={selectedRows}
-        actionButtons={buttonData.map((button) => (
-          <AddButton key={button.id} text={button.text} />
-        ))}
+        actionButtons={[<AddButton key={1} text={'Add Artwork'} />]}
         showViewButtons={true}
         selectedView={selectedView}
         setSelectedView={setSelectedView}
       />
-      {showFilter && <Filter filter={filter} updateFilter={updateFilter} />}
+      {showFilter && (
+        <Filter
+          filter={filter}
+          setFilter={setFilter}
+          updateFilter={updateFilter}
+          columns={cols}
+        />
+      )}
       {selectedView === 'list' ? (
         isLoading ? (
           <div>Loading...</div>
         ) : (
           <MuiTable
-            columns={[
-              { key: 'title', header: 'Title', enableSort: false },
-              { key: 'artist', header: 'Artist', enableSort: false },
-              { key: 'collection', header: 'Collection', enableSort: false },
-              {
-                key: 'lastReport',
-                header: 'Last Report',
-                enableSort: true,
-                formatFn: formatDate,
-              },
-              {
-                key: 'dateAcquired',
-                header: 'Date Acquired',
-                enableSort: true,
-                formatFn: formatDate,
-              },
-              {
-                key: 'value',
-                header: 'Value',
-                enableSort: true,
-                formatFn: formatMoney,
-              },
-            ]}
+            columns={cols}
             data={portfolioData}
             hideHeader={false}
             showCheckboxes={true}

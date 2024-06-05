@@ -4,14 +4,15 @@ import ChevronUp from 'assets/icons/ChevronUp.svg';
 import ViewGallery from 'assets/icons/ViewGallery.svg';
 import ViewList from 'assets/icons/ViewList.svg';
 import Visibility from 'assets/icons/Visibility.svg';
-import React, { useState } from 'react';
+import React from 'react';
 import { ReactSVG } from 'react-svg';
 
 import './ActionBar.scss';
 
 function ActionBar({
   showFilter,
-  updateFilter,
+  searchQuery,
+  setSearchQuery,
   selectedRows,
   searchText,
   onToggleFilter,
@@ -21,15 +22,8 @@ function ActionBar({
   selectedView,
   setSelectedView,
 }) {
-  const [searchValue, setSearchValue] = useState('');
-
   const handleSearchChange = (event, newValue) => {
-    setSearchValue(newValue);
-    if (newValue.length >= 2) {
-      updateFilter('searchText', newValue);
-    } else {
-      updateFilter('searchText', '');
-    }
+    setSearchQuery(newValue);
   };
 
   return (
@@ -38,8 +32,8 @@ function ActionBar({
         <Autocomplete
           freeSolo
           sx={{ width: 265, borderRadius: '4px' }}
-          options={searchValue.length >= 2 ? searchOptions : []}
-          value={searchValue}
+          options={searchQuery.length >= 2 ? searchOptions : []}
+          value={searchQuery}
           onInputChange={handleSearchChange}
           renderInput={(params) => (
             <TextField {...params} size="small" label={searchText} />

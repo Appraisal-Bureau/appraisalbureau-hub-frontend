@@ -1,10 +1,22 @@
+import { TablePagination } from '@mui/material';
 import { useState } from 'react';
 
 import './Grid.scss';
 import GridCard from './GridCard/GridCard';
 
-function Grid({ cardData }) {
-  const [selectedCards, setSelectedCards] = useState([]);
+function Grid({ cardData, selectedCards, setSelectedCards }) {
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(9);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
   const isSelected = (id) => {
     return selectedCards === null ? false : selectedCards.indexOf(id) !== -1;
   };
@@ -41,6 +53,15 @@ function Grid({ cardData }) {
           );
         })}
       </div>
+      <TablePagination
+        component="div"
+        rowsPerPageOptions={[9, 12, 16]}
+        page={page}
+        rowsPerPage={rowsPerPage}
+        count={cardData.length}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
     </>
   );
 }

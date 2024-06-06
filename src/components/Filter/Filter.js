@@ -11,7 +11,7 @@ import apiClient from 'services/apiService';
 
 import './Filter.scss';
 
-function Filter({ filter, setFilter, updateFilter, columns }) {
+function Filter({ filter, addFilter, removeFilter, columns }) {
   const [savedFilter, setSavedFilter] = useState('');
   const [addFilterType, setAddFilterType] = useState('');
   const [dynamicFilter, setDynamicFilter] = useState('');
@@ -145,11 +145,11 @@ function Filter({ filter, setFilter, updateFilter, columns }) {
 
   const handleApplyFilter = () => {
     // TODO: iterate through the saved filter
-    // update the filter state w/ updateFilter
+    // update the filter state w/ addFilter/removeFilter
   };
 
   const handleAddFilter = (event) => {
-    updateFilter(addFilterType, {
+    addFilter(addFilterType, {
       id: searchQuery,
       selector: dynamicFilter,
       query: searchQuery,
@@ -157,7 +157,11 @@ function Filter({ filter, setFilter, updateFilter, columns }) {
   };
 
   const handleClearFilter = () => {
-    setFilter([]);
+    Object.keys(filter).forEach(function (key) {
+      filter[key].forEach((value) => {
+        removeFilter(key, value);
+      });
+    });
   };
 
   const colsDict = columns.reduce((acc, col) => {
@@ -223,7 +227,11 @@ function Filter({ filter, setFilter, updateFilter, columns }) {
                     {values.map((item) => (
                       <div className="primary-body filter-item" key={item.id}>
                         {item.query}
-                        <ReactSVG className="icon" src={X} />
+                        <ReactSVG
+                          className="icon"
+                          src={X}
+                          onClick={() => removeFilter(key, item.query)}
+                        />
                       </div>
                     ))}
                   </div>

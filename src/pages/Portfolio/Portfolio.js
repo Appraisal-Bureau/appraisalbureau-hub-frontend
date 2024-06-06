@@ -37,10 +37,26 @@ function Portfolio() {
     setShowFilter((prevShowFilter) => !prevShowFilter);
   };
 
-  const updateFilter = (key, value) => {
+  const addFilter = (key, value) => {
+    if (filter.key && filter.key.includes(value)) {
+      return;
+    }
+    setFilter((prevFilter) => {
+      const currentFilterValues = prevFilter[key] || [];
+      if (currentFilterValues.some((item) => item.id === value.id)) {
+        return prevFilter;
+      }
+      return {
+        ...prevFilter,
+        [key]: [...currentFilterValues, value],
+      };
+    });
+  };
+
+  const removeFilter = (key, query) => {
     setFilter((prevFilter) => ({
       ...prevFilter,
-      [key]: [...(prevFilter[key] || []), value],
+      [key]: (prevFilter[key] || []).filter((item) => item.query !== query),
     }));
   };
 
@@ -170,8 +186,8 @@ function Portfolio() {
       {showFilter && (
         <Filter
           filter={filter}
-          setFilter={setFilter}
-          updateFilter={updateFilter}
+          addFilter={addFilter}
+          removeFilter={removeFilter}
           columns={cols}
         />
       )}
@@ -203,7 +219,11 @@ function Portfolio() {
           />
         )
       ) : (
-        <Grid cardData={portfolioData} />
+        <Grid
+          cardData={portfolioData}
+          selectedCards={selectedRows}
+          setSelectedCards={setSelectedRows}
+        />
       )}
     </div>
   );

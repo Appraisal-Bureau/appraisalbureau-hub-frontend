@@ -1,9 +1,11 @@
+@import 'styles/variables';
+
 .grid {
   margin-left: 20px;
   margin-right: 20px;
-  width: 100%;
   display: flex;
   padding: 16px;
+  padding-top: 50px;
   align-items: flex-start;
   align-content: flex-start;
   gap: 32px;

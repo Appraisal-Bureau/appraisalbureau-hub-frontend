@@ -55,12 +55,13 @@ function Grid({ cardData, selectedCards, setSelectedCards }) {
       </div>
       <TablePagination
         component="div"
-        rowsPerPageOptions={[9, 12, 16]}
+        rowsPerPageOptions={[15, 25, 50]}
         page={page}
         rowsPerPage={rowsPerPage}
         count={cardData.length}
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
+        sx={{ marginRight: '60px', marginBottom: '20px' }}
       />
     </>
   );

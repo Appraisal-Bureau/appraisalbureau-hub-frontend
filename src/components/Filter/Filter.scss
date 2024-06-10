@@ -1,9 +1,13 @@
 @import 'styles/variables';
+@import 'styles/mixins';
 
 .filter {
   padding: 24px 16px;
   border-radius: 8px;
   margin: 25px 40px 0px;
+  @include mobile-only {
+    margin-left: 0;
+  }
   width: fit-content;
   background-color: $light-background-secondary;
   .filter-select-group {
@@ -15,6 +19,17 @@
       width: 256px;
       padding-left: 4px;
       padding-right: 4px;
+    }
+  }
+  .input {
+    height: 40px;
+    width: 100px;
+  }
+  .ant-picker {
+    background-color: $light-background-secondary;
+    font-family: 'Roboto';
+    .ant-picker-input input {
+      font-size: 16;
     }
   }
   .notification-number {
@@ -31,6 +46,7 @@
       margin-left: 16px;
       gap: 4px;
       display: flex;
+      flex-wrap: wrap;
       padding-top: 12px;
     }
     .filter-item {
@@ -45,6 +61,7 @@
         svg path {
           fill: white;
         }
+        cursor: pointer;
       }
     }
   }

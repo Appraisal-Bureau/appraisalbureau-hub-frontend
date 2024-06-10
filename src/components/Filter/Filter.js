@@ -1,9 +1,16 @@
-import { Autocomplete, InputLabel, TextField } from '@mui/material';
+import {
+  Autocomplete,
+  InputAdornment,
+  InputLabel,
+  TextField,
+} from '@mui/material';
+import { DatePicker } from 'antd';
 import { message } from 'antd';
 import { savedFilters } from 'api/api.js';
 import X from 'assets/icons/X.svg';
 import AddButton from 'components/AddButton/AddButton';
 import Dropdown from 'components/Dropdown/Dropdown';
+import { format, parseISO } from 'date-fns';
 import { useEffect, useRef, useState } from 'react';
 import { ReactSVG } from 'react-svg';
 // eslint-disable-next-line
@@ -16,6 +23,8 @@ function Filter({ filter, addFilter, removeFilter, columns }) {
   const [addFilterType, setAddFilterType] = useState('');
   const [dynamicFilter, setDynamicFilter] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+  const [searchMin, setSearchMin] = useState(null);
+  const [searchMax, setSearchMax] = useState(null);
   const [options, setOptions] = useState({
     savedFilterOptions: [],
     addFilterTypeOptions: [],
@@ -33,10 +42,15 @@ function Filter({ filter, addFilter, removeFilter, columns }) {
 
   useEffect(() => {
     const fetchSavedFilterOptions = async () => {
+      const emptyOption = {
+        id: -1,
+        label: 'Select Saved Filter',
+        value: '',
+      };
       try {
         //const response = await apiClient.get('/user-filters');
         //updateOptions('savedFilterOptions', response.data);
-        updateOptions('savedFilterOptions', savedFilters);
+        updateOptions('savedFilterOptions', [emptyOption, ...savedFilters]);
       } catch (error) {
         console.error('Error fetching options: ', error);
       }
@@ -52,7 +66,12 @@ function Filter({ filter, addFilter, removeFilter, columns }) {
         value: col.key,
       };
     });
-    updateOptions('addFilterTypeOptions', addFilterOptions);
+    const emptyOption = {
+      id: -1,
+      label: 'Options',
+      value: '',
+    };
+    updateOptions('addFilterTypeOptions', [emptyOption, ...addFilterOptions]);
   }, [columns]);
 
   useEffect(() => {
@@ -61,43 +80,30 @@ function Filter({ filter, addFilter, removeFilter, columns }) {
       addFilterType === 'artist' ||
       addFilterType === 'collection'
     ) {
-      updateOptions('dynamicFilterOptions', [
-        { id: 1, label: 'Multi-Select', value: '$in' },
-        { id: 2, label: 'Single Select', value: '$eqi' },
-      ]);
+      const stringOptions = [{ id: 1, label: 'Multi-Select', value: '$in' }];
+      updateOptions('dynamicFilterOptions', stringOptions);
+      setDynamicFilter(stringOptions[0].value);
     } else if (
       addFilterType === 'dateAcquired' ||
-      addFilterType === 'lastReport'
+      addFilterType === 'lastReport' ||
+      addFilterType === 'value'
     ) {
-      updateOptions('dynamicFilterOptions', [
-        { id: 1, label: 'Before', value: '$lte' },
-        { id: 2, label: 'After', value: '$gte' },
-        { id: 3, label: 'Exact Date', value: '$eqi' },
-      ]);
-    } else if (addFilterType === 'value') {
-      updateOptions('dynamicFilterOptions', [
-        {
-          id: 1,
-          label: 'Less Than',
-          value: '$lte',
-        },
-        {
-          id: 2,
-          label: 'Greater Than',
-          value: '$gte',
-        },
-        {
-          id: 3,
-          label: 'Exactly',
-          value: '$eqi',
-        },
-      ]);
+      const numberOptions = [
+        { id: 1, label: 'Exactly', value: '$eqi' },
+        { id: 2, label: 'Between', value: '$between' },
+      ];
+      updateOptions('dynamicFilterOptions', numberOptions);
+      setDynamicFilter(numberOptions[0].value);
     }
-    setDynamicFilter('');
   }, [addFilterType]);
 
   useEffect(() => {
-    if (searchQuery.length >= 2) {
+    if (
+      (addFilterType === 'title' ||
+        addFilterType === 'artist' ||
+        addFilterType === 'collection') &&
+      searchQuery.length >= 2
+    ) {
       try {
         /* const response = await apiClient.get('/items', {
           params: {
@@ -119,7 +125,7 @@ function Filter({ filter, addFilter, removeFilter, columns }) {
     } else {
       updateOptions('autocompleteOptions', []);
     }
-  }, [searchQuery]);
+  }, [searchQuery, addFilterType]);
 
   useEffect(() => {
     filterIsEmpty.current = !Object.values(filter).some(
@@ -137,10 +143,27 @@ function Filter({ filter, addFilter, removeFilter, columns }) {
 
   const handleChangeDynamicFilter = (event) => {
     setDynamicFilter(event.target.value);
+    setSearchQuery('');
+    setSearchMin('');
+    setSearchMax('');
   };
 
   const handleSearchChange = (event, newValue) => {
     setSearchQuery(newValue);
+  };
+
+  const handleChangeSearchRange = (event) => {
+    if (event.target) {
+      if (event.target.id === 'minValue') {
+        setSearchMin(event.target.value);
+      }
+      if (event.target.id === 'maxValue') {
+        setSearchMax(event.target.value);
+      }
+    } else {
+      setSearchMin(format(event[0].$d, 'yyyy-MM-dd'));
+      setSearchMax(format(event[1].$d, 'yyyy-MM-dd'));
+    }
   };
 
   const handleApplyFilter = () => {
@@ -149,17 +172,24 @@ function Filter({ filter, addFilter, removeFilter, columns }) {
   };
 
   const handleAddFilter = (event) => {
+    if (dynamicFilter === '$between' && searchMin === '' && searchMax === '') {
+      return;
+    }
+    const idParam =
+      dynamicFilter === '$between' ? `${searchMin}-${searchMax}` : searchQuery;
+    const queryParam =
+      dynamicFilter === '$between' ? [searchMin, searchMax] : searchQuery;
     addFilter(addFilterType, {
-      id: searchQuery,
+      id: idParam,
       selector: dynamicFilter,
-      query: searchQuery,
+      query: queryParam,
     });
   };
 
   const handleClearFilter = () => {
     Object.keys(filter).forEach(function (key) {
       filter[key].forEach((value) => {
-        removeFilter(key, value);
+        removeFilter(key, value.query);
       });
     });
   };
@@ -168,6 +198,39 @@ function Filter({ filter, addFilter, removeFilter, columns }) {
     acc[col.key] = col;
     return acc;
   }, {});
+
+  const formatFilter = (key, value) => {
+    if (key === 'title' || key === 'artist' || key === 'collection') {
+      return value.query;
+    }
+    if (key === 'value') {
+      if (!Array.isArray(value.query)) {
+        return `$${value.query}`;
+      } else {
+        if (value.query[0] === '') {
+          return `Less Than $${value.query[1]}`;
+        } else if (value.query[1] === '') {
+          return `Greater Than $${value.query[0]}`;
+        } else {
+          return `$${value.query[0]}-${value.query[1]}`;
+        }
+      }
+    }
+    if (key === 'dateAcquired' || key === 'lastReport') {
+      if (!Array.isArray(value.query)) {
+        return format(parseISO(value.query), `MMM d, yyyy`);
+      } else {
+        console.log(value.query + 1);
+        if (value.query[0] === '') {
+          return `Before ${format(parseISO(value.query[1]), 'MMM d, yyyy')}`;
+        } else if (value.query[1] === '') {
+          return `After ${format(parseISO(value.query[0]), 'MMM d, yyyy')}`;
+        } else {
+          return `${format(parseISO(value.query[0]), 'MMM d, yyyy')}-${format(parseISO(value.query[1]), 'MMM d, yyyy')}`;
+        }
+      }
+    }
+  };
 
   return (
     <div className="filter">
@@ -179,7 +242,6 @@ function Filter({ filter, addFilter, removeFilter, columns }) {
           value={savedFilter}
           onChange={handleChangeSavedFilter}
           labelId="saved-filter"
-          defaultText="Select Saved Filter"
           options={options.savedFilterOptions}
         />
         <AddButton text="Apply" onClick={handleApplyFilter} />
@@ -192,26 +254,80 @@ function Filter({ filter, addFilter, removeFilter, columns }) {
           value={addFilterType}
           onChange={handleChangeAddFilterType}
           labelId="add-filter-type"
-          defaultText="Options"
           options={options.addFilterTypeOptions}
         />
         <Dropdown
           value={dynamicFilter}
           onChange={handleChangeDynamicFilter}
           labelId="dynamic-filter"
-          defaultText="Options"
           options={options.dynamicFilterOptions}
         />
-        <Autocomplete
-          freeSolo
-          sx={{ width: 265, borderRadius: '4px' }}
-          options={searchQuery.length >= 2 ? options.autocompleteOptions : []}
-          value={searchQuery}
-          onInputChange={handleSearchChange}
-          renderInput={(params) => (
-            <TextField {...params} size="small" label={'Search'} />
+        {(addFilterType === 'title' ||
+          addFilterType === 'artist' ||
+          addFilterType === 'collection') && (
+          <Autocomplete
+            freeSolo
+            sx={{ width: 265, borderRadius: '4px' }}
+            options={searchQuery.length >= 2 ? options.autocompleteOptions : []}
+            value={searchQuery}
+            onInputChange={handleSearchChange}
+            renderInput={(params) => (
+              <TextField {...params} size="small" label={'Search'} />
+            )}
+          />
+        )}
+        {(addFilterType === 'dateAcquired' || addFilterType === 'lastReport') &&
+          dynamicFilter === '$eqi' && (
+            <DatePicker size="large" onChange={handleSearchChange} />
           )}
-        />
+        {(addFilterType === 'dateAcquired' || addFilterType === 'lastReport') &&
+          dynamicFilter === '$between' && (
+            <DatePicker.RangePicker
+              size={'large'}
+              id={{ start: 'minDate', end: 'maxDate' }}
+              onChange={handleChangeSearchRange}
+            />
+          )}
+        {addFilterType === 'value' && dynamicFilter === '$eqi' && (
+          <TextField
+            className="input"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">$</InputAdornment>
+              ),
+            }}
+            id="value"
+            label="Value"
+            onChange={(e) => handleSearchChange(e, e.target.value)}
+          />
+        )}
+        {addFilterType === 'value' && dynamicFilter === '$between' && (
+          <>
+            <TextField
+              className="input"
+              id="minValue"
+              label="Minimum"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">$</InputAdornment>
+                ),
+              }}
+              onChange={handleChangeSearchRange}
+            />
+
+            <TextField
+              className="input"
+              id="maxValue"
+              label="Maximum"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">$</InputAdornment>
+                ),
+              }}
+              onChange={handleChangeSearchRange}
+            />
+          </>
+        )}
         <AddButton text="Add" onClick={handleAddFilter} />
       </div>
       {!filterIsEmpty.current && (
@@ -226,7 +342,7 @@ function Filter({ filter, addFilter, removeFilter, columns }) {
                   <div className="pill-container">
                     {values.map((item) => (
                       <div className="primary-body filter-item" key={item.id}>
-                        {item.query}
+                        {formatFilter(key, item)}
                         <ReactSVG
                           className="icon"
                           src={X}

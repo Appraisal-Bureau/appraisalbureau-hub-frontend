@@ -4,7 +4,8 @@ import { ReactSVG } from 'react-svg';
 
 import './Dropdown.scss';
 
-function Dropdown({ value, onChange, labelId, defaultText, options }) {
+function Dropdown({ value, onChange, labelId, options }) {
+  const emptySelected = value === '';
   return (
     <Select
       className="dropdown"
@@ -15,12 +16,18 @@ function Dropdown({ value, onChange, labelId, defaultText, options }) {
       IconComponent={() => (
         <ReactSVG src={ChevronDown} style={{ paddingTop: 4 }} />
       )}
+      sx={{
+        '.MuiSelect-select': {
+          color: emptySelected ? 'gray' : 'inherit',
+        },
+      }}
     >
-      <MenuItem key="default" value="">
-        <span>{defaultText}</span>
-      </MenuItem>
       {options.map((option) => (
-        <MenuItem key={option.id} value={option.value}>
+        <MenuItem
+          disabled={option.value === ''}
+          key={option.id}
+          value={option.value}
+        >
           {option.label}
         </MenuItem>
       ))}

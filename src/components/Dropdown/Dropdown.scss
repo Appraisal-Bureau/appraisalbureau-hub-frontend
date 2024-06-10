@@ -1,7 +1,7 @@
 @import 'styles/variables';
 
 .dropdown {
-  span {
+  .grayed-out {
     color: $light-text-placeholder-disabled;
   }
   padding: 0px 4px 0px 8px;

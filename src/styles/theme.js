@@ -6,6 +6,7 @@ export const theme = createTheme({
       styleOverrides: {
         root: {
           borderRadius: 8,
+          height: 'inherit',
         },
         input: {
           padding: 'inherit',

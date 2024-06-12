@@ -1,14 +1,15 @@
 import { message } from 'antd';
-import { portfolioTableData } from 'api/api.js';
+//import { portfolioTableData } from 'api/api.js';
 import ActionBar from 'components/ActionBar/ActionBar';
 import AddButton from 'components/AddButton/AddButton';
 import Filter from 'components/Filter/Filter';
 import Grid from 'components/Grid/Grid';
 import MuiTable from 'components/Table/Table';
 import { formatDate, formatMoney } from 'helpers/portfolio.helpers';
+import { filterIsEmpty } from 'helpers/portfolio.helpers';
 import { useCallback, useEffect, useState } from 'react';
+import apiClient from 'services/apiService';
 
-// import apiClient from 'services/apiService';
 import './Portfolio.scss';
 
 function Portfolio() {
@@ -63,28 +64,30 @@ function Portfolio() {
   const fetchPortfolioData = useCallback(async () => {
     setIsLoading(true);
     try {
-      // var sortOrder = null;
-      // if (orderBy !== null) {
-      //   sortOrder = `${orderBy}:${order}`;
-      // }
-      // const response = await apiClient.get('/items', {
-      //   params: {
-      //     sort: sortOrder,
-      //     filter: // https://docs.strapi.io/dev-docs/api/rest/filters-locale-publication#filtering,
-      //     pagination: {
-      //       page: page,
-      //       pageSize: rowsPerPage,
-      //       start: page * rowsPerPage,
-      //       limit: rowsPerPage,
-      //     },
-      //     // Can optionally set fields param if too much unneeded data is being retrieved
-      //   },
-      // });
-      // const result = await response.json();
-      // setPortfolioData(result.data);
-      setPortfolioData(portfolioTableData);
-      //setTotalRows(result.meta.pagination.total);
-      setTotalRows(portfolioTableData.length);
+      var sortOrder = null;
+      var filterObject = {};
+      if (orderBy !== null) {
+        sortOrder = `${orderBy}:${order}`;
+      }
+      if (!filterIsEmpty(filter)) {
+        // iterate through the filter
+        console.log(filter);
+      }
+      const response = await apiClient.get('/items', {
+        params: {
+          sort: sortOrder,
+          filter: filterObject,
+          pagination: {
+            page: page,
+            pageSize: rowsPerPage,
+            start: page * rowsPerPage,
+            limit: rowsPerPage,
+          },
+        },
+      });
+      const result = await response.json();
+      setPortfolioData(result.data);
+      setTotalRows(result.meta.pagination.total);
     } catch (error) {
       console.error(error);
       message.error('Error while getting portfolio data');
@@ -94,45 +97,55 @@ function Portfolio() {
     // eslint-disable-next-line
   }, [filter, portfolioData, order, orderBy, page, rowsPerPage]);
 
-  const fetchOptions = useCallback(async () => {
-    if (searchQuery.length >= 2) {
-      setIsLoading(true);
-      try {
-        /* const response = await apiClient.get('/items', {
-        params: {
-          filter: // filter,
-          fields: ['title', 'artist', 'collection']
-        },
-      }); */
-        // const result = await response.json();
-        // const data = result.data;
-        // const artworkItems = data.map((datum) => datum.attributes.artwork_item.data.attributes);
-        const data = portfolioTableData;
-        // populate search options
-        const titles = data.map((item) => item.title);
-        // const titles = artworkItems.map((item) => item.title);
-        const artists = data.map((item) => item.artist);
-        // const artists = artworkItems.map((item) => item.artist);
-        const collections = data.map((item) => item.collection);
-        // const collections = artworkItems.map((item) => item.workspace);
-        const combinedArray = [...titles, ...artists, ...collections];
-        const uniqueOptions = Array.from(new Set(combinedArray)).sort();
+  const fetchOptions = useCallback(() => {
+    async function fetchArtworkData() {
+      if (searchQuery.length >= 2) {
+        setIsLoading(true);
+        try {
+          var filterObject = {};
+          if (!filterIsEmpty(filter)) {
+            // iterate through the filter
+            console.log(filter);
+          }
+          const response = await apiClient.get('/items', {
+            params: {
+              filter: filterObject,
+              fields: ['title', 'artist', 'collection'],
+            },
+          });
+          const result = await response.json();
+          const data = result.data;
+          const artworkItems = data.map(
+            (datum) => datum.attributes.artwork_item.data.attributes,
+          );
+          // const data = portfolioTableData;
+          // populate search options
+          // const titles = data.map((item) => item.title);
+          const titles = artworkItems.map((item) => item.title);
+          // const artists = data.map((item) => item.artist);
+          const artists = artworkItems.map((item) => item.artist);
+          // const collections = data.map((item) => item.collection);
+          const collections = artworkItems.map((item) => item.workspace);
+          const combinedArray = [...titles, ...artists, ...collections];
+          const uniqueOptions = Array.from(new Set(combinedArray)).sort();
 
-        setSearchOptions(
-          uniqueOptions.filter((option) =>
-            option.toLowerCase().includes(searchQuery.toLowerCase()),
-          ),
-        );
-      } catch (error) {
-        console.error(error);
-        message.error('Error while fetching autocomplete options');
-      } finally {
-        setIsLoading(false);
+          setSearchOptions(
+            uniqueOptions.filter((option) =>
+              option.toLowerCase().includes(searchQuery.toLowerCase()),
+            ),
+          );
+        } catch (error) {
+          console.error(error);
+          message.error('Error while fetching autocomplete options');
+        } finally {
+          setIsLoading(false);
+        }
+      } else {
+        setSearchOptions([]);
       }
-    } else {
-      setSearchOptions([]);
     }
-  }, [searchQuery]);
+    fetchArtworkData();
+  }, [searchQuery, filter]);
 
   useEffect(() => {
     fetchPortfolioData();

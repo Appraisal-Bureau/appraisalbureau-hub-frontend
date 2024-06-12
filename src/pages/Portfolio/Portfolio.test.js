@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 
 import Portfolio from './Portfolio';
 
@@ -12,19 +12,17 @@ describe('Portfolio Component', () => {
     jest.clearAllMocks();
   });
 
-  it('renders the Portfolio component correctly', () => {
+  it('renders the Portfolio component correctly', async () => {
     render(<Portfolio />);
 
     expect(screen.getByText('My Portfolio')).toBeInTheDocument();
 
-    const table = screen.getAllByTestId('mui-table');
-    expect(table).toHaveLength(1);
+    await waitFor(() => {
+      const table = screen.getAllByTestId('mui-table');
+      expect(table).toHaveLength(1);
+    });
 
     const actionBar = screen.getByTestId('action-bar');
     expect(actionBar).toBeInTheDocument();
-  });
-
-  it('formats dates correctly', () => {
-    render(<Portfolio />);
   });
 });

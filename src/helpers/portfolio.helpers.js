@@ -25,3 +25,7 @@ const currencyFormatter = new Intl.NumberFormat('en-US', {
 export const formatMoney = (value) => {
   return currencyFormatter.format(value);
 };
+
+export const filterIsEmpty = (filter) => {
+  return !Object.values(filter).some((values) => values.length > 0);
+};

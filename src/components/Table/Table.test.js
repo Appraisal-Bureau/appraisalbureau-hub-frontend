@@ -31,9 +31,25 @@ const mockDataLong = Array.from({ length: 100 }, (_, index) => ({
 }));
 
 describe('MuiTable Component', () => {
+  let useStateMock;
+
+  beforeEach(() => {
+    useStateMock = jest.spyOn(React, 'useState');
+    useStateMock.mockImplementation((init) => [init, jest.fn()]);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('renders table correctly', () => {
     render(
-      <MuiTable columns={mockColumns} data={mockData} hideHeader={false} />,
+      <MuiTable
+        columns={mockColumns}
+        data={mockData}
+        hideHeader={false}
+        showPagination={false}
+      />,
     );
 
     mockColumns.forEach((column) => {
@@ -49,7 +65,12 @@ describe('MuiTable Component', () => {
 
   it('hides table header when hideHeader is true', () => {
     render(
-      <MuiTable columns={mockColumns} data={mockData} hideHeader={true} />,
+      <MuiTable
+        columns={mockColumns}
+        data={mockData}
+        hideHeader={true}
+        showPagination={false}
+      />,
     );
 
     mockColumns.forEach((column) => {
@@ -86,12 +107,16 @@ describe('MuiTable Component', () => {
 
 describe('MuiTable checkbox functionality', () => {
   it('renders checkboxes when showCheckboxes is true', () => {
+    const [selectedRows, setSelectedRows] = useState([]);
     render(
       <MuiTable
         columns={mockColumns}
         data={mockData}
         hideHeader={false}
         showCheckboxes={true}
+        selectedRows={selectedRows}
+        setSelectedRows={setSelectedRows}
+        showPagination={false}
       />,
     );
 
@@ -100,12 +125,15 @@ describe('MuiTable checkbox functionality', () => {
   });
 
   it('selects and unselects all checkboxes when the select all checkbox is clicked', () => {
+    const [selectedRows, setSelectedRows] = useState([]);
     render(
       <MuiTable
         columns={mockColumns}
         data={mockData}
         hideHeader={false}
         showCheckboxes={true}
+        selectedRows={selectedRows}
+        setSelectedRows={setSelectedRows}
         showPagination={false}
       />,
     );
@@ -149,6 +177,9 @@ describe('MuiTable pagination functionality', () => {
         hideHeader={false}
         showCheckboxes={false}
         showPagination={true}
+        rowsPerPage={15}
+        page={0}
+        totalRows={mockDataLong.length}
       />,
     );
 
@@ -172,6 +203,9 @@ describe('MuiTable pagination functionality', () => {
         showCheckboxes={false}
         showPagination={true}
         enableSort={false}
+        rowsPerPage={15}
+        page={0}
+        totalRows={mockDataLong.length}
       />,
     );
 
@@ -181,17 +215,20 @@ describe('MuiTable pagination functionality', () => {
     fireEvent.mouseDown(screen.getByRole('combobox'));
     const options = screen.getAllByRole('option');
     const option20 = options.find(
-      (option) => option.getAttribute('data-value') === '20',
+      (option) => option.getAttribute('data-value') === '25',
     );
     fireEvent.click(option20);
     await waitFor(() => {
       const updatedNumRows = screen.getAllByRole('row').length - 1;
-      expect(updatedNumRows).toBe(20);
+      expect(updatedNumRows).toBe(25);
     });
   });
 
   describe('MuiTable Sort Functionality', () => {
     it('sorts by value in ascending and descending order', () => {
+      const [order, setOrder] = useState('asc');
+      const [orderBy, setOrderBy] = useState(null);
+
       render(
         <MuiTable
           columns={mockColumnsWithFormatAndSort}
@@ -199,6 +236,10 @@ describe('MuiTable pagination functionality', () => {
           hideHeader={false}
           showCheckboxes={false}
           showPagination={false}
+          order={order}
+          setOrder={setOrder}
+          orderBy={orderBy}
+          setOrderBy={setOrderBy}
         />,
       );
 
@@ -226,5 +267,3 @@ describe('MuiTable pagination functionality', () => {
     });
   });
 });
-
-// unit tests for sorting

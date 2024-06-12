@@ -11,9 +11,9 @@ import X from 'assets/icons/X.svg';
 import AddButton from 'components/AddButton/AddButton';
 import Dropdown from 'components/Dropdown/Dropdown';
 import { format, parseISO } from 'date-fns';
+import { filterIsEmpty as isEmpty } from 'helpers/portfolio.helpers';
 import { useEffect, useRef, useState } from 'react';
 import { ReactSVG } from 'react-svg';
-// eslint-disable-next-line
 import apiClient from 'services/apiService';
 
 import './Filter.scss';
@@ -48,8 +48,8 @@ function Filter({ filter, addFilter, removeFilter, columns }) {
         value: '',
       };
       try {
-        //const response = await apiClient.get('/user-filters');
-        //updateOptions('savedFilterOptions', response.data);
+        const response = await apiClient.get('/user-filters');
+        updateOptions('savedFilterOptions', response.data);
         updateOptions('savedFilterOptions', [emptyOption, ...savedFilters]);
       } catch (error) {
         console.error('Error fetching options: ', error);
@@ -97,7 +97,7 @@ function Filter({ filter, addFilter, removeFilter, columns }) {
     }
   }, [addFilterType]);
 
-  useEffect(() => {
+  useEffect(async () => {
     if (
       (addFilterType === 'title' ||
         addFilterType === 'artist' ||
@@ -105,19 +105,25 @@ function Filter({ filter, addFilter, removeFilter, columns }) {
       searchQuery.length >= 2
     ) {
       try {
-        /* const response = await apiClient.get('/items', {
+        var filterObject = {};
+        if (!filterIsEmpty(filter)) {
+          // iterate through the filter
+          console.log(filter);
+        }
+        const response = await apiClient.get('/items', {
           params: {
-            filter: // filter by search query,
-            fields: addFilterType
+            filter: filterObject,
+            fields: addFilterType,
           },
-        }); */
-        // const result = await response.json();
-        // const data = result.data;
-        // const artworkItems = data.map((datum) => datum.attributes.artwork_item.data.attributes);
-        // populate search options
-        // const combinedArray = artworkItems.map((item) => item[addFilterType]);
-        // const uniqueOptions = Array.from(new Set(combinedArray)).sort();
-        // updateOptions('autocompleteOptions', uniqueOptions);
+        });
+        const result = await response.json();
+        const data = result.data;
+        const artworkItems = data.map(
+          (datum) => datum.attributes.artwork_item.data.attributes,
+        );
+        const combinedArray = artworkItems.map((item) => item[addFilterType]);
+        const uniqueOptions = Array.from(new Set(combinedArray)).sort();
+        updateOptions('autocompleteOptions', uniqueOptions);
       } catch (error) {
         console.error(error);
         message.error('Error while fetching autocomplete options');
@@ -128,9 +134,7 @@ function Filter({ filter, addFilter, removeFilter, columns }) {
   }, [searchQuery, addFilterType]);
 
   useEffect(() => {
-    filterIsEmpty.current = !Object.values(filter).some(
-      (values) => values.length > 0,
-    );
+    filterIsEmpty.current = isEmpty(filter);
   }, [filter]);
 
   const handleChangeSavedFilter = (event) => {

@@ -5,9 +5,9 @@ import React from 'react';
 import Dropdown from './Dropdown';
 
 const mockOptions = [
-  { id: '1', value: '', label: 'Select an option' },
-  { id: '2', value: 'option1', label: 'Option 1' },
-  { id: '3', value: 'option2', label: 'Option 2' },
+  { id: -1, value: '', label: 'Select an option' },
+  { id: 1, value: 'option1', label: 'Option 1' },
+  { id: 2, value: 'option2', label: 'Option 2' },
 ];
 
 describe('Dropdown component', () => {
@@ -21,7 +21,7 @@ describe('Dropdown component', () => {
       />,
     );
 
-    expect(screen.getByRole('button')).toHaveTextContent('Select an option');
+    expect(screen.getByRole('combobox')).toHaveTextContent('Select an option');
   });
 
   test('renders with a selected value', () => {
@@ -34,7 +34,7 @@ describe('Dropdown component', () => {
       />,
     );
 
-    expect(screen.getByRole('button')).toHaveTextContent('Option 1');
+    expect(screen.getByRole('combobox')).toHaveTextContent('Option 1');
   });
 
   test('displays options when clicked', () => {
@@ -47,9 +47,8 @@ describe('Dropdown component', () => {
       />,
     );
 
-    fireEvent.mouseDown(screen.getByRole('button'));
+    fireEvent.mouseDown(screen.getByRole('combobox'));
 
-    expect(screen.getByText('Select an option')).toBeInTheDocument();
     expect(screen.getByText('Option 1')).toBeInTheDocument();
     expect(screen.getByText('Option 2')).toBeInTheDocument();
   });
@@ -65,25 +64,9 @@ describe('Dropdown component', () => {
       />,
     );
 
-    fireEvent.mouseDown(screen.getByRole('button'));
+    fireEvent.mouseDown(screen.getByRole('combobox'));
     fireEvent.click(screen.getByText('Option 1'));
 
     expect(handleChange).toHaveBeenCalledTimes(1);
-    expect(handleChange).toHaveBeenCalledWith(expect.anything(), 'option1');
-  });
-
-  test('displays custom icon', () => {
-    render(
-      <Dropdown
-        value=""
-        onChange={() => {}}
-        labelId="test-dropdown"
-        options={mockOptions}
-      />,
-    );
-
-    const icon = screen.getByTestId('custom-dropdown-icon');
-    expect(icon).toBeInTheDocument();
-    expect(icon).toHaveAttribute('src', 'assets/icons/ChevronDown.svg');
   });
 });

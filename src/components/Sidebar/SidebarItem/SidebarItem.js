@@ -6,11 +6,7 @@ import './SidebarItem.scss';
 
 function SidebarItem({ text, icon, linkDestination }) {
   let currentLocation = useLocation().pathname.substring(1);
-  const indexOfSlash = currentLocation.indexOf('/');
-  if (indexOfSlash >= 0) {
-    currentLocation = currentLocation.split('/').pop();
-  }
-  const isActive = currentLocation === linkDestination;
+  const isActive = currentLocation.includes(linkDestination);
   return (
     <div
       data-testid="sidebar-item"

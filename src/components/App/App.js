@@ -12,6 +12,7 @@ const Dashboard = React.lazy(() => import('pages/Dashboard/Dashboard'));
 const Portfolio = React.lazy(() => import('pages/Portfolio/Portfolio'));
 const Login = React.lazy(() => import('pages/Login/Login'));
 const Register = React.lazy(() => import('pages/Register/Register'));
+const ArtworkPage = React.lazy(() => import('pages/ArtworkPage/ArtworkPage'));
 
 function App() {
   const { isLoading } = useAuthContext();
@@ -57,6 +58,7 @@ function App() {
         <Route element={wrapPrivateRoute(<AuthorizedUserLayout />)}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/portfolio" element={<Portfolio />} />
+          <Route path="/portfolio/:id" element={<ArtworkPage />} />
         </Route>
       </Routes>
     </>

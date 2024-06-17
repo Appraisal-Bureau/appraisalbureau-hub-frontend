@@ -6,7 +6,7 @@ import GridCard from './GridCard/GridCard';
 
 function Grid({ cardData, selectedCards, setSelectedCards }) {
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(9);
+  const [rowsPerPage, setRowsPerPage] = useState(15);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);

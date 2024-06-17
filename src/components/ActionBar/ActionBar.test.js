@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import { portfolioTableData } from 'api/api.js';
-import ActionButton from 'components/ActionButton/ActionButton';
+import AddButton from 'components/AddButton/AddButton';
 
 import ActionBar from './ActionBar.js';
 
@@ -9,6 +9,8 @@ const mockProps = {
   searchText: 'Search portfolio',
   searchOptions: portfolioTableData,
   actionButtons: [<AddButton key={1} text="Add Artwork" />],
+  searchQuery: '',
+  selectedRows: [],
 };
 
 describe('Action Bar Component', () => {

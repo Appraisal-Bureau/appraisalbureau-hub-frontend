@@ -1,16 +1,32 @@
 import '@testing-library/jest-dom';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { savedFilters } from 'api/api.js';
 import React from 'react';
 import apiClient from 'services/apiService';
 
 import Filter from './Filter';
 
-// Mock the API client
-jest.mock('services/apiService');
-jest.mock('api/api.js', () => ({
-  savedFilters: [{ id: 1, label: 'Saved Filter 1', value: 'filter1' }],
-}));
+const savedFilters = {
+  data: [
+    {
+      id: 1,
+      attributes: {
+        label: 'Saved Filter 1',
+        values: {
+          data: 'some-data',
+        },
+      },
+    },
+    {
+      id: 2,
+      attributes: {
+        label: 'Saved Filter 2',
+        values: {
+          data: 'some-other-data',
+        },
+      },
+    },
+  ],
+};
 
 const columns = [
   { header: 'Title', key: 'title' },
@@ -26,12 +42,11 @@ const filter = {};
 const addFilter = jest.fn();
 const removeFilter = jest.fn();
 
-describe('Filter Component', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
+apiClient.get = jest.fn();
+apiClient.get.mockResolvedValue({ data: savedFilters });
 
-  test('renders without errors', () => {
+describe('Filter Component', () => {
+  it('renders without errors', () => {
     render(
       <Filter
         filter={filter}
@@ -44,9 +59,7 @@ describe('Filter Component', () => {
     expect(screen.getByText('Add a filter')).toBeInTheDocument();
   });
 
-  test('fetches saved filters and populates the dropdown', async () => {
-    apiClient.get.mockResolvedValueOnce({ data: savedFilters });
-
+  it('fetches saved filters and populates the dropdown', async () => {
     render(
       <Filter
         filter={filter}
@@ -56,16 +69,21 @@ describe('Filter Component', () => {
       />,
     );
 
-    await waitFor(() =>
-      expect(apiClient.get).toHaveBeenCalledWith('/user-filters'),
-    );
+    await waitFor(() => {
+      expect(apiClient.get).toHaveBeenCalledWith('/user-filters');
+      console.log('got here');
+    });
 
-    const dropdown = screen.getByLabelText('saved-filter');
+    const dropdown = screen.getByRole('combobox', {
+      name: 'Apply Saved Filter',
+    });
     fireEvent.mouseDown(dropdown);
-    expect(screen.getByText('Saved Filter 1')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText('Saved Filter 1')).toBeInTheDocument();
+    });
   });
 
-  test('populates add filter type options', async () => {
+  it('populates add filter type options', async () => {
     render(
       <Filter
         filter={filter}
@@ -75,8 +93,11 @@ describe('Filter Component', () => {
       />,
     );
 
-    const addFilterTypeDropdown = screen.getByLabelText('add-filter-type');
-    fireEvent.mouseDown(addFilterTypeDropdown);
+    const addFilterTypeDropdown = screen.getByTestId('add-filter-type');
+
+    await waitFor(() => {
+      fireEvent.click(addFilterTypeDropdown);
+    });
 
     expect(screen.getByText('Title')).toBeInTheDocument();
     expect(screen.getByText('Artist')).toBeInTheDocument();
@@ -86,7 +107,7 @@ describe('Filter Component', () => {
     expect(screen.getByText('Value')).toBeInTheDocument();
   });
 
-  test('updates dynamic filter options based on add filter type', async () => {
+  it('updates dynamic filter options based on add filter type', async () => {
     render(
       <Filter
         filter={filter}
@@ -96,13 +117,13 @@ describe('Filter Component', () => {
       />,
     );
 
-    const addFilterTypeDropdown = screen.getByLabelText('add-filter-type');
-    fireEvent.mouseDown(addFilterTypeDropdown);
+    const addFilterTypeDropdown = screen.getByTestId('add-filter-type');
+    fireEvent.click(addFilterTypeDropdown);
     fireEvent.click(screen.getByText('Title'));
 
     await waitFor(() => {
       const dynamicFilterDropdown = screen.getByLabelText('dynamic-filter');
-      fireEvent.mouseDown(dynamicFilterDropdown);
+      fireEvent.click(dynamicFilterDropdown);
       expect(screen.getByText('Multi-Select')).toBeInTheDocument();
     });
 
@@ -117,7 +138,7 @@ describe('Filter Component', () => {
     });
   });
 
-  test('handles search query input change', async () => {
+  it('handles search query input change', async () => {
     render(
       <Filter
         filter={filter}
@@ -127,7 +148,7 @@ describe('Filter Component', () => {
       />,
     );
 
-    const addFilterTypeDropdown = screen.getByLabelText('add-filter-type');
+    const addFilterTypeDropdown = screen.getByTestId('add-filter-type');
     fireEvent.mouseDown(addFilterTypeDropdown);
     fireEvent.click(screen.getByText('Title'));
 
@@ -137,7 +158,7 @@ describe('Filter Component', () => {
     expect(searchInput.value).toBe('test');
   });
 
-  test('adds a filter when Add button is clicked', async () => {
+  it('adds a filter when Add button is clicked', async () => {
     render(
       <Filter
         filter={filter}
@@ -147,7 +168,7 @@ describe('Filter Component', () => {
       />,
     );
 
-    const addFilterTypeDropdown = screen.getByLabelText('add-filter-type');
+    const addFilterTypeDropdown = screen.getByTestId('add-filter-type');
     fireEvent.mouseDown(addFilterTypeDropdown);
     fireEvent.click(screen.getByText('Title'));
 
@@ -162,15 +183,15 @@ describe('Filter Component', () => {
 
     expect(addFilter).toHaveBeenCalledWith('title', {
       id: 'test',
-      selector: '$in',
+      selector: '$eqi',
       query: 'test',
     });
   });
 
-  test('clears all filters when Clear All button is clicked', async () => {
+  it('clears all filters when Clear All button is clicked', async () => {
     render(
       <Filter
-        filter={{ title: [{ id: 'test', query: 'test' }] }}
+        filter={{ title: [{ id: 'test', selector: '$eqi', query: 'test' }] }}
         addFilter={addFilter}
         removeFilter={removeFilter}
         columns={columns}
@@ -182,10 +203,10 @@ describe('Filter Component', () => {
     expect(removeFilter).toHaveBeenCalledWith('title', 'test');
   });
 
-  test('displays active filters correctly', async () => {
+  it('displays active filters correctly', async () => {
     render(
       <Filter
-        filter={{ title: [{ id: 'test', query: 'test' }] }}
+        filter={{ title: [{ id: 'test', selector: '$eqi', query: 'test' }] }}
         addFilter={addFilter}
         removeFilter={removeFilter}
         columns={columns}

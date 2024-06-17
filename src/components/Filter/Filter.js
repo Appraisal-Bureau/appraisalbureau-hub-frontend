@@ -6,13 +6,15 @@ import {
 } from '@mui/material';
 import { DatePicker } from 'antd';
 import { message } from 'antd';
-import { savedFilters } from 'api/api.js';
 import X from 'assets/icons/X.svg';
 import AddButton from 'components/AddButton/AddButton';
 import Dropdown from 'components/Dropdown/Dropdown';
 import { format, parseISO } from 'date-fns';
-import { filterIsEmpty as isEmpty } from 'helpers/portfolio.helpers';
-import { useEffect, useRef, useState } from 'react';
+import {
+  formatFilterForQuery,
+  filterIsEmpty as isEmpty,
+} from 'helpers/portfolio.helpers';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { ReactSVG } from 'react-svg';
 import apiClient from 'services/apiService';
 
@@ -40,23 +42,31 @@ function Filter({ filter, addFilter, removeFilter, columns }) {
     }));
   };
 
-  useEffect(() => {
-    const fetchSavedFilterOptions = async () => {
-      const emptyOption = {
-        id: -1,
-        label: 'Select Saved Filter',
-        value: '',
-      };
-      try {
-        const response = await apiClient.get('/user-filters');
-        updateOptions('savedFilterOptions', response.data);
-        updateOptions('savedFilterOptions', [emptyOption, ...savedFilters]);
-      } catch (error) {
-        console.error('Error fetching options: ', error);
-      }
+  const fetchSavedFilterOptions = useCallback(async () => {
+    const emptyOption = {
+      id: -1,
+      label: 'Select Saved Filter',
+      value: '',
     };
-    fetchSavedFilterOptions();
+    try {
+      const response = await apiClient.get('/user-filters');
+      let userFilters = [];
+      for (const item of response.data.data) {
+        userFilters.push({
+          id: item.id,
+          label: item.attributes.label,
+          value: item.attributes.values.data,
+        });
+      }
+      updateOptions('savedFilterOptions', [emptyOption, ...userFilters]);
+    } catch (error) {
+      console.error('Error fetching options: ', error);
+    }
   }, []);
+
+  useEffect(() => {
+    fetchSavedFilterOptions();
+  }, [fetchSavedFilterOptions]);
 
   useEffect(() => {
     const addFilterOptions = columns.map((col) => {
@@ -80,7 +90,7 @@ function Filter({ filter, addFilter, removeFilter, columns }) {
       addFilterType === 'artist' ||
       addFilterType === 'collection'
     ) {
-      const stringOptions = [{ id: 1, label: 'Multi-Select', value: '$in' }];
+      const stringOptions = [{ id: 1, label: 'Multi-Select', value: '$eqi' }];
       updateOptions('dynamicFilterOptions', stringOptions);
       setDynamicFilter(stringOptions[0].value);
     } else if (
@@ -97,7 +107,7 @@ function Filter({ filter, addFilter, removeFilter, columns }) {
     }
   }, [addFilterType]);
 
-  useEffect(async () => {
+  const fetchAutocompleteOptions = useCallback(async () => {
     if (
       (addFilterType === 'title' ||
         addFilterType === 'artist' ||
@@ -106,17 +116,16 @@ function Filter({ filter, addFilter, removeFilter, columns }) {
     ) {
       try {
         var filterObject = {};
-        if (!filterIsEmpty(filter)) {
-          // iterate through the filter
-          console.log(filter);
+        if (!isEmpty(filter)) {
+          filterObject = formatFilterForQuery(filter);
         }
         const response = await apiClient.get('/items', {
           params: {
-            filter: filterObject,
+            filters: filterObject,
             fields: addFilterType,
           },
         });
-        const result = await response.json();
+        const result = await response.data;
         const data = result.data;
         const artworkItems = data.map(
           (datum) => datum.attributes.artwork_item.data.attributes,
@@ -131,7 +140,11 @@ function Filter({ filter, addFilter, removeFilter, columns }) {
     } else {
       updateOptions('autocompleteOptions', []);
     }
-  }, [searchQuery, addFilterType]);
+  }, [searchQuery, addFilterType, filter]);
+
+  useEffect(() => {
+    fetchAutocompleteOptions();
+  }, [fetchAutocompleteOptions, searchQuery, addFilterType, filter]);
 
   useEffect(() => {
     filterIsEmpty.current = isEmpty(filter);
@@ -171,21 +184,56 @@ function Filter({ filter, addFilter, removeFilter, columns }) {
   };
 
   const handleApplyFilter = () => {
-    // TODO: iterate through the saved filter
-    // update the filter state w/ addFilter/removeFilter
+    handleClearFilter(); // remove all other filters & start over
+    for (const item of savedFilter) {
+      const filterType = columns.find(
+        (col) => col.header === item.attributes.type.data.attributes.label,
+      ).key;
+      const querySelector = Object.keys(item.attributes.value)[0];
+      const queryParam = Object.values(item.attributes.value)[0];
+      let idParam = '';
+      if (Array.isArray(queryParam)) {
+        idParam = `${queryParam[0]}-${queryParam[1]}`;
+      } else {
+        idParam = queryParam;
+      }
+      addFilter(filterType, {
+        id: idParam,
+        selector: querySelector,
+        query: queryParam,
+      });
+    }
   };
 
   const handleAddFilter = (event) => {
     if (dynamicFilter === '$between' && searchMin === '' && searchMax === '') {
       return;
     }
-    const idParam =
-      dynamicFilter === '$between' ? `${searchMin}-${searchMax}` : searchQuery;
-    const queryParam =
-      dynamicFilter === '$between' ? [searchMin, searchMax] : searchQuery;
+    let idParam = '';
+    let queryParam = '';
+    let querySelector = '';
+    if (dynamicFilter === '$between') {
+      if (searchMin === '' && searchMax !== '') {
+        querySelector = '$lte';
+        queryParam = searchMax;
+        idParam = searchMax;
+      } else if (searchMin !== '' && searchMax === '') {
+        querySelector = '$gte';
+        queryParam = searchMin;
+        idParam = searchMin;
+      } else {
+        querySelector = '$between';
+        queryParam = [searchMin, searchMax];
+        idParam = `${searchMin}-${searchMax}`;
+      }
+    } else {
+      idParam = searchQuery;
+      queryParam = searchQuery;
+      querySelector = dynamicFilter;
+    }
     addFilter(addFilterType, {
       id: idParam,
-      selector: dynamicFilter,
+      selector: querySelector,
       query: queryParam,
     });
   };
@@ -196,6 +244,22 @@ function Filter({ filter, addFilter, removeFilter, columns }) {
         removeFilter(key, value.query);
       });
     });
+  };
+
+  const saveCustomFilter = async () => {
+    try {
+      // TODO: set up request body - how should user enter label?
+      await apiClient.post('/user-filters', {
+        params: {
+          // params here
+        },
+      });
+    } catch (error) {
+      console.error(error);
+      message.error('Error while saving filter');
+    } finally {
+      fetchSavedFilterOptions();
+    }
   };
 
   const colsDict = columns.reduce((acc, col) => {
@@ -224,7 +288,6 @@ function Filter({ filter, addFilter, removeFilter, columns }) {
       if (!Array.isArray(value.query)) {
         return format(parseISO(value.query), `MMM d, yyyy`);
       } else {
-        console.log(value.query + 1);
         if (value.query[0] === '') {
           return `Before ${format(parseISO(value.query[1]), 'MMM d, yyyy')}`;
         } else if (value.query[1] === '') {
@@ -366,7 +429,11 @@ function Filter({ filter, addFilter, removeFilter, columns }) {
             >
               Clear All
             </button>
-            <button id="save" className="actionButton">
+            <button
+              id="save"
+              className="actionButton"
+              onClick={saveCustomFilter}
+            >
               Save Custom Filter
             </button>
           </div>

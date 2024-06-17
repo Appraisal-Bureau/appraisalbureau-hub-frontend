@@ -6,7 +6,7 @@ import Filter from 'components/Filter/Filter';
 import Grid from 'components/Grid/Grid';
 import MuiTable from 'components/Table/Table';
 import { formatDate, formatMoney } from 'helpers/portfolio.helpers';
-import { filterIsEmpty } from 'helpers/portfolio.helpers';
+import { filterIsEmpty, formatFilterForQuery } from 'helpers/portfolio.helpers';
 import { useCallback, useEffect, useState } from 'react';
 import apiClient from 'services/apiService';
 
@@ -70,91 +70,85 @@ function Portfolio() {
         sortOrder = `${orderBy}:${order}`;
       }
       if (!filterIsEmpty(filter)) {
-        // iterate through the filter
-        console.log(filter);
+        filterObject = formatFilterForQuery(filter);
       }
       const response = await apiClient.get('/items', {
         params: {
           sort: sortOrder,
-          filter: filterObject,
+          filters: filterObject,
           pagination: {
             page: page,
             pageSize: rowsPerPage,
-            start: page * rowsPerPage,
-            limit: rowsPerPage,
           },
         },
       });
-      const result = await response.json();
+      console.log(response);
+      const result = response.data;
       setPortfolioData(result.data);
-      setTotalRows(result.meta.pagination.total);
+      setTotalRows(result.meta.pagination?.total || 0);
     } catch (error) {
       console.error(error);
       message.error('Error while getting portfolio data');
     } finally {
       setIsLoading(false);
     }
-    // eslint-disable-next-line
-  }, [filter, portfolioData, order, orderBy, page, rowsPerPage]);
-
-  const fetchOptions = useCallback(() => {
-    async function fetchArtworkData() {
-      if (searchQuery.length >= 2) {
-        setIsLoading(true);
-        try {
-          var filterObject = {};
-          if (!filterIsEmpty(filter)) {
-            // iterate through the filter
-            console.log(filter);
-          }
-          const response = await apiClient.get('/items', {
-            params: {
-              filter: filterObject,
-              fields: ['title', 'artist', 'collection'],
-            },
-          });
-          const result = await response.json();
-          const data = result.data;
-          const artworkItems = data.map(
-            (datum) => datum.attributes.artwork_item.data.attributes,
-          );
-          // const data = portfolioTableData;
-          // populate search options
-          // const titles = data.map((item) => item.title);
-          const titles = artworkItems.map((item) => item.title);
-          // const artists = data.map((item) => item.artist);
-          const artists = artworkItems.map((item) => item.artist);
-          // const collections = data.map((item) => item.collection);
-          const collections = artworkItems.map((item) => item.workspace);
-          const combinedArray = [...titles, ...artists, ...collections];
-          const uniqueOptions = Array.from(new Set(combinedArray)).sort();
-
-          setSearchOptions(
-            uniqueOptions.filter((option) =>
-              option.toLowerCase().includes(searchQuery.toLowerCase()),
-            ),
-          );
-        } catch (error) {
-          console.error(error);
-          message.error('Error while fetching autocomplete options');
-        } finally {
-          setIsLoading(false);
-        }
-      } else {
-        setSearchOptions([]);
-      }
-    }
-    fetchArtworkData();
-  }, [searchQuery, filter]);
+  }, [filter, order, orderBy, page, rowsPerPage]);
 
   useEffect(() => {
     fetchPortfolioData();
   }, [fetchPortfolioData]);
 
+  const fetchArtworkData = useCallback(async () => {
+    if (searchQuery.length >= 2) {
+      setIsLoading(true);
+      try {
+        var filterObject = {};
+        if (!filterIsEmpty(filter)) {
+          // iterate through the filter
+          filterObject = formatFilterForQuery(filter);
+        }
+        const response = await apiClient.get('/items', {
+          params: {
+            filters: filterObject,
+            fields: ['title', 'artist', 'collection'],
+          },
+        });
+        const result = await response.json();
+        const data = result.data;
+        const artworkItems = data.map(
+          (datum) => datum.attributes.artwork_item.data.attributes,
+        );
+        // const data = portfolioTableData;
+        // populate search options
+        // const titles = data.map((item) => item.title);
+        const titles = artworkItems.map((item) => item.title);
+        // const artists = data.map((item) => item.artist);
+        const artists = artworkItems.map((item) => item.artist);
+        // const collections = data.map((item) => item.collection);
+        const collections = artworkItems.map((item) => item.workspace);
+        const combinedArray = [...titles, ...artists, ...collections];
+        const uniqueOptions = Array.from(new Set(combinedArray)).sort();
+
+        setSearchOptions(
+          uniqueOptions.filter((option) =>
+            option.toLowerCase().includes(searchQuery.toLowerCase()),
+          ),
+        );
+      } catch (error) {
+        console.error(error);
+        message.error('Error while fetching autocomplete options');
+      } finally {
+        setIsLoading(false);
+      }
+    } else {
+      setSearchOptions([]);
+    }
+  }, [searchQuery, filter]);
+
   useEffect(() => {
-    fetchOptions();
+    fetchArtworkData();
     setPage(0);
-  }, [fetchOptions, filter]);
+  }, [fetchArtworkData]);
 
   const cols = [
     { key: 'title', header: 'Title', enableSort: false },

@@ -10,15 +10,30 @@ function Dropdown({ value, onChange, labelId, options }) {
     <Select
       className="dropdown"
       labelId={labelId}
+      data-testid={labelId}
       value={value}
       displayEmpty
       onChange={onChange}
       IconComponent={() => (
-        <ReactSVG src={ChevronDown} style={{ paddingTop: 4 }} />
+        <ReactSVG
+          src={ChevronDown}
+          style={{
+            paddingTop: 4,
+            cursor: 'pointer',
+            position: 'absolute',
+            right: 0,
+            paddingLeft: 4,
+            paddingRight: 4,
+            pointerEvents: 'none',
+          }}
+        />
       )}
       sx={{
         '.MuiSelect-select': {
           color: emptySelected ? 'gray' : 'inherit',
+          '&.MuiSelect-outlined.MuiInputBase-input.MuiOutlinedInput-input': {
+            paddingRight: '25px',
+          },
         },
       }}
     >

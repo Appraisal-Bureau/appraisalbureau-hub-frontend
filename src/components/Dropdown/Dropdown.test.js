@@ -11,7 +11,7 @@ const mockOptions = [
 ];
 
 describe('Dropdown component', () => {
-  test('renders with initial value', () => {
+  it('renders with initial value', () => {
     render(
       <Dropdown
         value=""
@@ -24,7 +24,7 @@ describe('Dropdown component', () => {
     expect(screen.getByRole('combobox')).toHaveTextContent('Select an option');
   });
 
-  test('renders with a selected value', () => {
+  it('renders with a selected value', () => {
     render(
       <Dropdown
         value="option1"
@@ -37,7 +37,7 @@ describe('Dropdown component', () => {
     expect(screen.getByRole('combobox')).toHaveTextContent('Option 1');
   });
 
-  test('displays options when clicked', () => {
+  it('displays options when clicked', () => {
     render(
       <Dropdown
         value=""

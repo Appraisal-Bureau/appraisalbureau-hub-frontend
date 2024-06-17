@@ -12,7 +12,6 @@ apiClient.interceptors.request.use(
   (config) => {
     const token = Cookies.get('jwt');
     if (token) {
-      console.log('got jwt!');
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;

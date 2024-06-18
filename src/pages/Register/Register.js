@@ -10,13 +10,13 @@ import {
   Typography,
   message,
 } from 'antd';
+import { register } from 'api/auth';
 import Page from 'components/Page/Page';
 import { useAuthContext } from 'context/AuthContext';
 import { setToken } from 'helpers/auth.helpers';
 import useScreenSize from 'hooks/useScreenSize';
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import apiClient from 'services/apiService';
 
 const Register = () => {
   const { isDesktopView } = useScreenSize();
@@ -27,7 +27,7 @@ const Register = () => {
   const onFinish = async (values) => {
     setIsLoading(true);
     try {
-      const { data } = await apiClient.post('auth/local/register', values);
+      const { data } = await register(values);
       if (data?.error) {
         throw data?.error;
       } else {
@@ -37,7 +37,6 @@ const Register = () => {
         navigate('/dashboard', { replace: true });
       }
     } catch (error) {
-      console.error(error);
       setError(error?.message ?? 'Something went wrong!');
     } finally {
       setIsLoading(false);

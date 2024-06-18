@@ -1,4 +1,4 @@
-import { portfolio, upcomingReports } from 'api/api';
+import { portfolio, upcomingReports } from 'api/mockData';
 import manHangingPaintingImage from 'assets/man-hanging-painting.svg';
 import manSortingFilesImage from 'assets/man-sorting-files.svg';
 import womanWithHeartImage from 'assets/woman-with-heart.svg';

@@ -16,12 +16,6 @@ const mockData = [
   { title: 'Art Piece 3', artist: 'Artist 3', value: 2000 },
 ];
 
-jest.mock('services/apiService.js', () => ({
-  apiClient: {
-    get: jest.fn(),
-  },
-}));
-
 const init = [];
 const setState = jest.fn();
 const useStateSpy = jest.spyOn(React, 'useState');

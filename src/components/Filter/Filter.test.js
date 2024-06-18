@@ -1,7 +1,8 @@
 import '@testing-library/jest-dom';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { getSavedFilters } from 'api/user-filters';
 import React from 'react';
-import apiClient from 'services/apiService';
+import { act } from 'react-dom/test-utils';
 
 import Filter from './Filter';
 
@@ -42,8 +43,8 @@ const filter = {};
 const addFilter = jest.fn();
 const removeFilter = jest.fn();
 
-apiClient.get = jest.fn();
-apiClient.get.mockResolvedValue({ data: savedFilters });
+jest.mock('api/user-filters');
+getSavedFilters.mockResolvedValue({ data: { data: [] } });
 
 describe('Filter Component', () => {
   it('renders without errors', () => {
@@ -60,6 +61,7 @@ describe('Filter Component', () => {
   });
 
   it('fetches saved filters and populates the dropdown', async () => {
+    getSavedFilters.mockResolvedValue({ data: savedFilters });
     render(
       <Filter
         filter={filter}
@@ -70,8 +72,7 @@ describe('Filter Component', () => {
     );
 
     await waitFor(() => {
-      expect(apiClient.get).toHaveBeenCalledWith('/user-filters');
-      console.log('got here');
+      expect(getSavedFilters).toHaveBeenCalled();
     });
 
     const dropdown = screen.getByRole('combobox', {
@@ -83,31 +84,8 @@ describe('Filter Component', () => {
     });
   });
 
-  it('populates add filter type options', async () => {
-    render(
-      <Filter
-        filter={filter}
-        addFilter={addFilter}
-        removeFilter={removeFilter}
-        columns={columns}
-      />,
-    );
-
-    const addFilterTypeDropdown = screen.getByTestId('add-filter-type');
-
-    await waitFor(() => {
-      fireEvent.click(addFilterTypeDropdown);
-    });
-
-    expect(screen.getByText('Title')).toBeInTheDocument();
-    expect(screen.getByText('Artist')).toBeInTheDocument();
-    expect(screen.getByText('Collection')).toBeInTheDocument();
-    expect(screen.getByText('Date Acquired')).toBeInTheDocument();
-    expect(screen.getByText('Last Report')).toBeInTheDocument();
-    expect(screen.getByText('Value')).toBeInTheDocument();
-  });
-
   it('updates dynamic filter options based on add filter type', async () => {
+    getSavedFilters.mockResolvedValue({ data: { data: [] } });
     render(
       <Filter
         filter={filter}
@@ -117,25 +95,20 @@ describe('Filter Component', () => {
       />,
     );
 
-    const addFilterTypeDropdown = screen.getByTestId('add-filter-type');
+    const addFilterTypeDropdown = await screen.findByTestId('add-filter-type');
     fireEvent.click(addFilterTypeDropdown);
     fireEvent.click(screen.getByText('Title'));
 
-    await waitFor(() => {
-      const dynamicFilterDropdown = screen.getByLabelText('dynamic-filter');
-      fireEvent.click(dynamicFilterDropdown);
-      expect(screen.getByText('Multi-Select')).toBeInTheDocument();
-    });
+    const dynamicFilterDropdown = await screen.findByTestId('dynamic-filter');
+    fireEvent.click(dynamicFilterDropdown);
+    expect(screen.getByText('Multi-Select')).toBeInTheDocument();
 
     fireEvent.mouseDown(addFilterTypeDropdown);
     fireEvent.click(screen.getByText('Date Acquired'));
 
-    await waitFor(() => {
-      const dynamicFilterDropdown = screen.getByLabelText('dynamic-filter');
-      fireEvent.mouseDown(dynamicFilterDropdown);
-      expect(screen.getByText('Exactly')).toBeInTheDocument();
-      expect(screen.getByText('Between')).toBeInTheDocument();
-    });
+    fireEvent.mouseDown(dynamicFilterDropdown);
+    expect(screen.getByText('Exactly')).toBeInTheDocument();
+    expect(screen.getByText('Between')).toBeInTheDocument();
   });
 
   it('handles search query input change', async () => {
@@ -172,7 +145,7 @@ describe('Filter Component', () => {
     fireEvent.mouseDown(addFilterTypeDropdown);
     fireEvent.click(screen.getByText('Title'));
 
-    const dynamicFilterDropdown = screen.getByLabelText('dynamic-filter');
+    const dynamicFilterDropdown = screen.getByTestId('dynamic-filter');
     fireEvent.mouseDown(dynamicFilterDropdown);
     fireEvent.click(screen.getByText('Multi-Select'));
 

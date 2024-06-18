@@ -6,6 +6,8 @@ import {
 } from '@mui/material';
 import { DatePicker } from 'antd';
 import { message } from 'antd';
+import { getItems } from 'api/items';
+import { getSavedFilters, postSavedFilter } from 'api/user-filters';
 import X from 'assets/icons/X.svg';
 import AddButton from 'components/AddButton/AddButton';
 import Dropdown from 'components/Dropdown/Dropdown';
@@ -16,7 +18,6 @@ import {
 } from 'helpers/portfolio.helpers';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ReactSVG } from 'react-svg';
-import apiClient from 'services/apiService';
 
 import './Filter.scss';
 
@@ -49,7 +50,7 @@ function Filter({ filter, addFilter, removeFilter, columns }) {
       value: '',
     };
     try {
-      const response = await apiClient.get('/user-filters');
+      const response = await getSavedFilters();
       let userFilters = [];
       for (const item of response.data.data) {
         userFilters.push({
@@ -60,7 +61,7 @@ function Filter({ filter, addFilter, removeFilter, columns }) {
       }
       updateOptions('savedFilterOptions', [emptyOption, ...userFilters]);
     } catch (error) {
-      console.error('Error fetching options: ', error);
+      message.error('Error while fetching options: ', error);
     }
   }, []);
 
@@ -119,11 +120,9 @@ function Filter({ filter, addFilter, removeFilter, columns }) {
         if (!isEmpty(filter)) {
           filterObject = formatFilterForQuery(filter);
         }
-        const response = await apiClient.get('/items', {
-          params: {
-            filters: filterObject,
-            fields: addFilterType,
-          },
+        const response = await getItems({
+          filter: filterObject,
+          fields: [addFilterType],
         });
         const result = await response.data;
         const data = result.data;
@@ -134,7 +133,6 @@ function Filter({ filter, addFilter, removeFilter, columns }) {
         const uniqueOptions = Array.from(new Set(combinedArray)).sort();
         updateOptions('autocompleteOptions', uniqueOptions);
       } catch (error) {
-        console.error(error);
         message.error('Error while fetching autocomplete options');
       }
     } else {
@@ -248,14 +246,15 @@ function Filter({ filter, addFilter, removeFilter, columns }) {
 
   const saveCustomFilter = async () => {
     try {
+      var filterObject = {};
+      if (!isEmpty(filter)) {
+        filterObject = formatFilterForQuery(filter);
+      } else {
+        return;
+      }
       // TODO: set up request body - how should user enter label?
-      await apiClient.post('/user-filters', {
-        params: {
-          // params here
-        },
-      });
+      await postSavedFilter(filterObject);
     } catch (error) {
-      console.error(error);
       message.error('Error while saving filter');
     } finally {
       fetchSavedFilterOptions();
@@ -321,12 +320,14 @@ function Filter({ filter, addFilter, removeFilter, columns }) {
           value={addFilterType}
           onChange={handleChangeAddFilterType}
           labelId="add-filter-type"
+          data-testid="add-filter-type"
           options={options.addFilterTypeOptions}
         />
         <Dropdown
           value={dynamicFilter}
           onChange={handleChangeDynamicFilter}
           labelId="dynamic-filter"
+          data-testid="dynamic-filter"
           options={options.dynamicFilterOptions}
         />
         {(addFilterType === 'title' ||

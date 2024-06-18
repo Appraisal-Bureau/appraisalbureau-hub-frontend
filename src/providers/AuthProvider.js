@@ -1,9 +1,9 @@
 import { message } from 'antd';
+import { getLoggedInUser } from 'api/auth';
 import { AuthContext } from 'context/AuthContext';
 import { getToken } from 'helpers/auth.helpers';
 import React, { useEffect, useState } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
-import apiClient from 'services/apiService';
 
 const AuthProvider = ({ children }) => {
   const [userData, setUserData] = useState();
@@ -13,10 +13,9 @@ const AuthProvider = ({ children }) => {
   const fetchLoggedInUser = async () => {
     setIsLoading(true);
     try {
-      const { data } = await apiClient.get('/users/me');
+      const { data } = await getLoggedInUser();
       setUserData(data);
     } catch (error) {
-      console.error(error);
       message.error('Error while getting logged in user details');
     } finally {
       setIsLoading(false);

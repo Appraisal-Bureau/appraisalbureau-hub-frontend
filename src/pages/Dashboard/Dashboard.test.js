@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
-import { portfolio } from 'api/api';
+import { portfolio } from 'api/mockData';
 import { calculatePortfolioTotal } from 'helpers/portfolio.helpers';
 
 import Dashboard from './Dashboard';

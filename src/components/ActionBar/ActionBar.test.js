@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
-import { portfolioTableData } from 'api/api.js';
+import { portfolioTableData } from 'api/mockData.js';
 import AddButton from 'components/AddButton/AddButton';
 
 import ActionBar from './ActionBar.js';

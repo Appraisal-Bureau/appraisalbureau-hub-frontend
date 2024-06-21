@@ -44,7 +44,7 @@ const addFilter = jest.fn();
 const removeFilter = jest.fn();
 
 jest.mock('api/user-filters');
-getSavedFilters.mockResolvedValue({ data: { data: [] } });
+getSavedFilters.mockResolvedValue({ data: [] });
 
 describe('Filter Component', () => {
   it('renders without errors', () => {
@@ -85,7 +85,7 @@ describe('Filter Component', () => {
   });
 
   it('updates dynamic filter options based on add filter type', async () => {
-    getSavedFilters.mockResolvedValue({ data: { data: [] } });
+    getSavedFilters.mockResolvedValue({ data: [] });
     render(
       <Filter
         filter={filter}

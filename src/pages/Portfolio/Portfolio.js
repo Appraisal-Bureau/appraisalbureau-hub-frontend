@@ -1,10 +1,11 @@
 import { message } from 'antd';
 import { getItems } from 'api/items';
+import Add from 'assets/icons/Add.svg';
 //import { portfolioTableData } from 'api/api.js';
 import ActionBar from 'components/ActionBar/ActionBar';
-import AddButton from 'components/AddButton/AddButton';
 import Filter from 'components/Filter/Filter';
 import Grid from 'components/Grid/Grid';
+import IconButton from 'components/IconButton/IconButton';
 import MuiTable from 'components/Table/Table';
 import { formatDate, formatMoney } from 'helpers/portfolio.helpers';
 import { filterIsEmpty, formatFilterForQuery } from 'helpers/portfolio.helpers';
@@ -80,9 +81,8 @@ function Portfolio() {
           pageSize: rowsPerPage,
         },
       });
-      const result = response.data;
-      setPortfolioData(result.data);
-      setTotalRows(result.meta.pagination?.total || 0);
+      setPortfolioData(response.data);
+      setTotalRows(response.meta.pagination?.total || 0);
     } catch (error) {
       message.error('Error while getting portfolio data');
     } finally {
@@ -178,7 +178,7 @@ function Portfolio() {
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         selectedRows={selectedRows}
-        actionButtons={[<AddButton key={1} text={'Add Artwork'} />]}
+        actionButtons={[<IconButton key={1} text={'Add Artwork'} icon={Add} />]}
         showViewButtons={true}
         selectedView={selectedView}
         setSelectedView={setSelectedView}

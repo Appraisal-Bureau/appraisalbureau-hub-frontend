@@ -8,9 +8,10 @@ import { DatePicker } from 'antd';
 import { message } from 'antd';
 import { getItems } from 'api/items';
 import { getSavedFilters, postSavedFilter } from 'api/user-filters';
+import Add from 'assets/icons/Add.svg';
 import X from 'assets/icons/X.svg';
-import AddButton from 'components/AddButton/AddButton';
 import Dropdown from 'components/Dropdown/Dropdown';
+import IconButton from 'components/IconButton/IconButton';
 import { format, parseISO } from 'date-fns';
 import {
   formatFilterForQuery,
@@ -52,7 +53,7 @@ function Filter({ filter, addFilter, removeFilter, columns }) {
     try {
       const response = await getSavedFilters();
       let userFilters = [];
-      for (const item of response.data.data) {
+      for (const item of response.data) {
         userFilters.push({
           id: item.id,
           label: item.attributes.label,
@@ -124,8 +125,7 @@ function Filter({ filter, addFilter, removeFilter, columns }) {
           filter: filterObject,
           fields: [addFilterType],
         });
-        const result = await response.data;
-        const data = result.data;
+        const data = response.data;
         const artworkItems = data.map(
           (datum) => datum.attributes.artwork_item.data.attributes,
         );
@@ -310,7 +310,7 @@ function Filter({ filter, addFilter, removeFilter, columns }) {
           labelId="saved-filter"
           options={options.savedFilterOptions}
         />
-        <AddButton text="Apply" onClick={handleApplyFilter} />
+        <IconButton text="Apply" onClick={handleApplyFilter} icon={Add} />
       </div>
       <InputLabel id="dynamic-filter" className="tertiary-body">
         Add a filter
@@ -396,7 +396,7 @@ function Filter({ filter, addFilter, removeFilter, columns }) {
             />
           </>
         )}
-        <AddButton text="Add" onClick={handleAddFilter} />
+        <IconButton text="Add" onClick={handleAddFilter} icon={Add} />
       </div>
       {!filterIsEmpty.current && (
         <>

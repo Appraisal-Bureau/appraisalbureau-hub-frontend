@@ -1,14 +1,15 @@
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import { portfolioTableData } from 'api/mockData.js';
-import AddButton from 'components/AddButton/AddButton';
+import Add from 'assets/icons/Add.svg';
+import IconButton from 'components/IconButton/IconButton.js';
 
 import ActionBar from './ActionBar.js';
 
 const mockProps = {
   searchText: 'Search portfolio',
   searchOptions: portfolioTableData,
-  actionButtons: [<AddButton key={1} text="Add Artwork" />],
+  actionButtons: [<IconButton key={1} text="Add Artwork" icon={Add} />],
   searchQuery: '',
   selectedRows: [],
 };

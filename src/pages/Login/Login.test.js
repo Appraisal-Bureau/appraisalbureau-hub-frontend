@@ -1,13 +1,12 @@
 import '@testing-library/jest-dom';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { login } from 'api/auth';
 import { setToken } from 'helpers/auth.helpers';
 import { MemoryRouter } from 'react-router-dom';
-import apiClient from 'services/apiService';
 import 'tests/setupTests';
 
 import Login from './Login';
 
-jest.mock('services/apiService');
 jest.mock('helpers/auth.helpers');
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -17,6 +16,7 @@ jest.mock('hooks/useScreenSize', () => ({
   __esModule: true,
   default: () => ({ isDesktopView: true }),
 }));
+jest.mock('api/auth');
 
 describe('Login Component', () => {
   const mockNavigate = jest.fn();
@@ -47,7 +47,7 @@ describe('Login Component', () => {
   });
 
   it('shows error message when form submission fails', async () => {
-    apiClient.post.mockRejectedValue({ message: 'Invalid credentials' });
+    login.mockRejectedValue({ message: 'Invalid credentials' });
 
     render(
       <MemoryRouter>
@@ -69,7 +69,7 @@ describe('Login Component', () => {
   });
 
   it('navigates to the dashboard on successful login', async () => {
-    apiClient.post.mockResolvedValue({
+    login.mockResolvedValue({
       data: {
         jwt: 'fake-jwt-token',
         user: { username: 'testuser' },
@@ -100,7 +100,7 @@ describe('Login Component', () => {
   });
 
   it('clears the error message when the alert is closed', async () => {
-    apiClient.post.mockRejectedValue({ message: 'Invalid credentials' });
+    login.mockRejectedValue({ message: 'Invalid credentials' });
 
     render(
       <MemoryRouter>

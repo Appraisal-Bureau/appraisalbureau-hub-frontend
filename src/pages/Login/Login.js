@@ -10,13 +10,13 @@ import {
   Typography,
   message,
 } from 'antd';
+import { login } from 'api/auth';
 import Page from 'components/Page/Page';
 import { useAuthContext } from 'context/AuthContext';
 import { setToken } from 'helpers/auth.helpers';
 import useScreenSize from 'hooks/useScreenSize';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import apiClient from 'services/apiService';
 
 const Login = () => {
   const { isDesktopView } = useScreenSize();
@@ -28,11 +28,7 @@ const Login = () => {
   const onFinish = async (values) => {
     setIsLoading(true);
     try {
-      const value = {
-        identifier: values.email,
-        password: values.password,
-      };
-      const { data } = await apiClient.post('auth/local', value);
+      const { data } = await login({ values });
       if (data?.error) {
         throw data?.error;
       } else {
@@ -41,7 +37,6 @@ const Login = () => {
         message.success(`Welcome back ${data.user.username}!`);
       }
     } catch (error) {
-      console.error(error);
       setError(error?.message ?? 'Something went wrong!');
     } finally {
       setIsLoading(false);

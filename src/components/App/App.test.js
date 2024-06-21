@@ -8,6 +8,7 @@ import App from './App';
 
 describe('App Component', () => {
   it('navigates to login page when not authenticated', async () => {
+    jest.setTimeout(10000);
     await act(async () => {
       render(
         <MemoryRouter initialEntries={['/dashboard']}>

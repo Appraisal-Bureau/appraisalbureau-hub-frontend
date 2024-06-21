@@ -1,13 +1,13 @@
 import '@testing-library/jest-dom';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { register } from 'api/auth';
 import { setToken } from 'helpers/auth.helpers';
 import { MemoryRouter } from 'react-router-dom';
-import apiClient from 'services/apiService';
 import 'tests/setupTests.js';
 
 import Register from './Register';
 
-jest.mock('services/apiService');
+jest.mock('api/auth');
 jest.mock('helpers/auth.helpers');
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -50,7 +50,7 @@ describe('Register Component', () => {
   });
 
   it('shows error message when form submission fails', async () => {
-    apiClient.post.mockRejectedValue({ message: 'Registration failed' });
+    register.mockRejectedValue({ message: 'Registration failed' });
 
     render(
       <MemoryRouter>
@@ -75,7 +75,7 @@ describe('Register Component', () => {
   });
 
   it('navigates to the dashboard on successful registration', async () => {
-    apiClient.post.mockResolvedValue({
+    register.mockResolvedValue({
       data: {
         jwt: 'fake-jwt-token',
         user: { username: 'testuser' },
@@ -109,7 +109,7 @@ describe('Register Component', () => {
   });
 
   it('clears the error message when the alert is closed', async () => {
-    apiClient.post.mockRejectedValue({ message: 'Registration failed' });
+    register.mockRejectedValue({ message: 'Registration failed' });
 
     render(
       <MemoryRouter>

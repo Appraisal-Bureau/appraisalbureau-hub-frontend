@@ -1,13 +1,15 @@
 import '@testing-library/jest-dom';
 import { render, screen, waitFor } from '@testing-library/react';
+import { getItems } from 'api/items';
 import React from 'react';
-import apiClient from 'services/apiService';
 
 import Portfolio from './Portfolio';
 
 jest.mock('components/Table/Table', () => () => (
   <div data-testid="mui-table"></div>
 ));
+
+jest.mock('api/items');
 
 describe('Portfolio Component', () => {
   beforeEach(() => {
@@ -54,10 +56,6 @@ describe('MuiTable pagination functionality with API', () => {
     value: index * 1000,
   }));
 
-  jest.mock('services/apiService.js', () => ({
-    get: jest.fn(),
-  }));
-
   const setState = jest.fn();
   const useStateSpy = jest.spyOn(React, 'useState');
   beforeEach(() => {
@@ -65,7 +63,7 @@ describe('MuiTable pagination functionality with API', () => {
   });
 
   it('fetches the next page when next page button is clicked', async () => {
-    apiClient.get
+    getItems
       .mockResolvedValueOnce({
         data: {
           items: mockDataLong.slice(0, 15),
@@ -97,7 +95,7 @@ describe('MuiTable pagination functionality with API', () => {
   });
 
   it('fetches the correct number of rows per page when changed via dropdown', async () => {
-    apiClient.get
+    getItems
       .mockResolvedValueOnce({
         data: {
           items: mockDataLong.slice(0, 15),
@@ -136,7 +134,7 @@ describe('MuiTable pagination functionality with API', () => {
     });
 
     it('sorts by value in ascending and descending order', async () => {
-      apiClient.get.mockResolvedValueOnce({ data: mockData });
+      getItems.mockResolvedValueOnce({ data: mockData });
 
       render(<Portfolio />);
 
@@ -149,7 +147,7 @@ describe('MuiTable pagination functionality with API', () => {
       expect(rows[2]).toHaveTextContent('$2,000');
 
       fireEvent.click(headerCell);
-      apiClient.get.mockResolvedValueOnce({ data: sortedAsc });
+      getItems.mockResolvedValueOnce({ data: sortedAsc });
 
       await waitFor(() => {
         rows = screen.getAllByRole('row').slice(1);
@@ -159,7 +157,7 @@ describe('MuiTable pagination functionality with API', () => {
       });
 
       fireEvent.click(headerCell);
-      apiClient.get.mockResolvedValueOnce({ data: sortedDesc });
+      getItems.mockResolvedValueOnce({ data: sortedDesc });
 
       await waitFor(() => {
         rows = screen.getAllByRole('row').slice(1);

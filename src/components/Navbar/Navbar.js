@@ -30,7 +30,6 @@ function Navbar() {
     setOpen(open);
   };
   const handleLogout = () => {
-    console.log('Logging out...');
     removeToken();
     setUser(null);
     navigate('/login', { replace: true });

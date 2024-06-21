@@ -1,4 +1,5 @@
 import { message } from 'antd';
+import { getItems } from 'api/items';
 //import { portfolioTableData } from 'api/api.js';
 import ActionBar from 'components/ActionBar/ActionBar';
 import AddButton from 'components/AddButton/AddButton';
@@ -8,7 +9,6 @@ import MuiTable from 'components/Table/Table';
 import { formatDate, formatMoney } from 'helpers/portfolio.helpers';
 import { filterIsEmpty, formatFilterForQuery } from 'helpers/portfolio.helpers';
 import { useCallback, useEffect, useState } from 'react';
-import apiClient from 'services/apiService';
 
 import './Portfolio.scss';
 
@@ -72,22 +72,18 @@ function Portfolio() {
       if (!filterIsEmpty(filter)) {
         filterObject = formatFilterForQuery(filter);
       }
-      const response = await apiClient.get('/items', {
-        params: {
-          sort: sortOrder,
-          filters: filterObject,
-          pagination: {
-            page: page,
-            pageSize: rowsPerPage,
-          },
+      const response = await getItems({
+        sort: sortOrder,
+        filters: filterObject,
+        pagination: {
+          page: page,
+          pageSize: rowsPerPage,
         },
       });
-      console.log(response);
       const result = response.data;
       setPortfolioData(result.data);
       setTotalRows(result.meta.pagination?.total || 0);
     } catch (error) {
-      console.error(error);
       message.error('Error while getting portfolio data');
     } finally {
       setIsLoading(false);
@@ -107,11 +103,9 @@ function Portfolio() {
           // iterate through the filter
           filterObject = formatFilterForQuery(filter);
         }
-        const response = await apiClient.get('/items', {
-          params: {
-            filters: filterObject,
-            fields: ['title', 'artist', 'collection'],
-          },
+        const response = await getItems({
+          filters: filterObject,
+          fields: ['title', 'artist', 'collection'],
         });
         const result = await response.json();
         const data = result.data;
@@ -135,7 +129,6 @@ function Portfolio() {
           ),
         );
       } catch (error) {
-        console.error(error);
         message.error('Error while fetching autocomplete options');
       } finally {
         setIsLoading(false);

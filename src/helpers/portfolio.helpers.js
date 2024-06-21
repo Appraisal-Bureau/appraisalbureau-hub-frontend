@@ -33,7 +33,6 @@ export const filterIsEmpty = (filter) => {
 export const formatFilterForQuery = (filter) => {
   let filterObj = {};
   filterObj['$or'] = [];
-  console.log(filter);
   for (const key in filter) {
     if (filter[key].length > 0) {
       if (filter[key].length === 1) {
@@ -62,5 +61,4 @@ export const formatFilterForQuery = (filter) => {
       }
     }
   }
-  console.log(filterObj);
 };

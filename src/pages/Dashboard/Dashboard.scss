@@ -1,6 +1,9 @@
 @import 'styles/mixins';
 
 #dashboard {
+  .dashboard-section {
+    padding-bottom: 50px;
+  }
   .table {
     width: 70%;
 

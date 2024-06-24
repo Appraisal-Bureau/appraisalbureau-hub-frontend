@@ -23,7 +23,6 @@ h1 {
   }
   color: $light-text-primary;
   font-weight: 300;
-  padding: 50px 20px 20px 20px;
   margin-bottom: 0;
 }
 
@@ -57,7 +56,6 @@ h3 {
 }
 
 h4 {
-  padding: 20px;
   margin: 0;
   font-family: 'Roboto';
   font-size: 24px;
@@ -124,6 +122,8 @@ caption {
 }
 
 .content-container {
+  margin-top: $nav-bar-height;
+  padding: 24px;
   @include tablet-portrait-up {
     margin-left: $side-bar-width;
   }

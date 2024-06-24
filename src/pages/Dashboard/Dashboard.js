@@ -28,8 +28,10 @@ function Dashboard() {
 
   return (
     <div id="dashboard">
-      <h1 className="title">My Portfolio</h1>
-      <div className="card-container">
+      <div className="dashboard-section">
+        <h1 className="title">My Portfolio</h1>
+      </div>
+      <div className="card-container dashboard-section">
         <Card
           imgSrc={manHangingPaintingImage}
           imgAltText="Man Hanging Painting"
@@ -49,27 +51,32 @@ function Dashboard() {
           actionButtonText="Create Collection"
         />
       </div>
-
-      <h4>Portfolio Value</h4>
-      <div className="big-number">
-        {formatMoney(calculatePortfolioTotal(portfolio))}
+      <div className="dashboard-section">
+        <h4>Portfolio Value</h4>
+        <div className="big-number">
+          {formatMoney(calculatePortfolioTotal(portfolio))}
+        </div>
+        <PortfolioVisualization data={portfolio} barColors={barColors} />
+        <MuiTable
+          columns={[{ key: 'color' }, { key: 'name' }, { key: 'value' }]}
+          data={portfolioDataWithColorKey}
+          hideHeader={true}
+        />
       </div>
-      <PortfolioVisualization data={portfolio} barColors={barColors} />
-      <MuiTable
-        columns={[{ key: 'color' }, { key: 'name' }, { key: 'value' }]}
-        data={portfolioDataWithColorKey}
-        hideHeader={true}
-      />
 
-      <h4>Recent Activity</h4>
-      <MuiTable
-        columns={[{ key: '', header: '' }]}
-        data={['', '', '', '', '']}
-        hideHeader={false}
-      />
+      <div className="dashboard-section">
+        <h4>Recent Activity</h4>
+        <MuiTable
+          columns={[{ key: '', header: '' }]}
+          data={['', '', '', '', '']}
+          hideHeader={false}
+        />
+      </div>
 
-      <h4>Upcoming Reports</h4>
-      <ReportsList data={upcomingReports} />
+      <div className="dashboard-section">
+        <h4>Upcoming Reports</h4>
+        <ReportsList data={upcomingReports} />
+      </div>
     </div>
   );
 }

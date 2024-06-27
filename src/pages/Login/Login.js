@@ -28,7 +28,7 @@ const Login = () => {
   const onFinish = async (values) => {
     setIsLoading(true);
     try {
-      const { data } = await login({ values });
+      const { data } = await login(values);
       if (data?.error) {
         throw data?.error;
       } else {

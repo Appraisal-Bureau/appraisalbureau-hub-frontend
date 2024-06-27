@@ -1,3 +1,5 @@
+const esModules = ['axios', '@testing-library/jest-dom'].join('|');
+
 module.exports = {
   collectCoverage: true,
   coverageReporters: ['lcov', 'text', 'html'],
@@ -5,7 +7,7 @@ module.exports = {
     '^.+\\.(js|jsx)$': 'babel-jest',
     '^.+\\.(ts|tsx)?$': 'ts-jest',
   },
-  transformIgnorePatterns: ['node_modules/(?!axios)/'],
+  transformIgnorePatterns: [`node_modules/(?!${esModules})`],
   preset: 'ts-jest',
   moduleNameMapper: {
     '\\.(css|scss)$': 'identity-obj-proxy',

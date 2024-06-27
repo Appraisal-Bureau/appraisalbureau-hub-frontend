@@ -34,7 +34,7 @@ function Filter({ filter, addFilter, removeFilter, columns }) {
     dynamicFilterOptions: [],
     autocompleteOptions: [],
   });
-  const filterIsEmpty = useRef(true);
+  const filterIsEmpty = useRef(isEmpty(filter));
 
   const updateOptions = (key, value) => {
     setOptions((prevOptions) => ({
@@ -312,7 +312,7 @@ function Filter({ filter, addFilter, removeFilter, columns }) {
         />
         <AddButton text="Apply" onClick={handleApplyFilter} />
       </div>
-      <InputLabel id="dynamic-filter" className="tertiary-body">
+      <InputLabel id="add-filter-type" className="tertiary-body">
         Add a filter
       </InputLabel>
       <div className="filter-select-group">

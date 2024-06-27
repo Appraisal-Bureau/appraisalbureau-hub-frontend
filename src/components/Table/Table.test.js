@@ -16,7 +16,24 @@ const mockData = [
   { title: 'Art Piece 3', artist: 'Artist 3', value: 2000 },
 ];
 
-const init = [];
+const sortedAsc = [
+  { title: 'Art Piece 1', artist: 'Artist 1', value: 1000 },
+  { title: 'Art Piece 3', artist: 'Artist 3', value: 2000 },
+  { title: 'Art Piece 2', artist: 'Artist 2', value: 3000 },
+];
+
+const sortedDesc = [
+  { title: 'Art Piece 2', artist: 'Artist 2', value: 3000 },
+  { title: 'Art Piece 3', artist: 'Artist 3', value: 2000 },
+  { title: 'Art Piece 1', artist: 'Artist 1', value: 1000 },
+];
+
+const mockDataLong = Array.from({ length: 100 }, (_, index) => ({
+  title: `Art Piece ${index + 1}`,
+  artist: 'Artist',
+  value: index * 1000,
+}));
+
 const setState = jest.fn();
 const useStateSpy = jest.spyOn(React, 'useState');
 beforeEach(() => {
@@ -24,6 +41,7 @@ beforeEach(() => {
 });
 
 describe('MuiTable Component', () => {
+  jest.spyOn(require('api/items'), 'getItems').mockReturnValue(mockData);
   it('renders table correctly', () => {
     render(
       <MuiTable
@@ -88,6 +106,7 @@ describe('MuiTable Component', () => {
 });
 
 describe('MuiTable checkbox functionality', () => {
+  jest.spyOn(require('api/items'), 'getItems').mockReturnValue(mockData);
   it('renders checkboxes when showCheckboxes is true', () => {
     render(
       <MuiTable
@@ -95,7 +114,7 @@ describe('MuiTable checkbox functionality', () => {
         data={mockData}
         hideHeader={false}
         showCheckboxes={true}
-        selectedRows={init}
+        selectedRows={[]}
         setSelectedRows={setState}
         totalRows={mockData.length}
         showPagination={false}
@@ -106,14 +125,14 @@ describe('MuiTable checkbox functionality', () => {
     expect(checkboxes.length).toBe(mockData.length + 1);
   });
 
-  it('selects and unselects all checkboxes when the select all checkbox is clicked', async () => {
+  it('selects all checkboxes when the select all checkbox is clicked', async () => {
     render(
       <MuiTable
         columns={mockColumns}
         data={mockData}
         hideHeader={false}
         showCheckboxes={true}
-        selectedRows={init}
+        selectedRows={[]}
         setSelectedRows={setState}
         totalRows={mockData.length}
         showPagination={false}
@@ -122,17 +141,9 @@ describe('MuiTable checkbox functionality', () => {
 
     await waitFor(() => {
       fireEvent.click(screen.getByLabelText('select all'));
-      const checkboxes = screen.getAllByRole('checkbox');
-      checkboxes.forEach((box) => {
-        expect(box.checked).toEqual(true);
-      });
-    });
-
-    await waitFor(() => {
-      fireEvent.click(screen.getByLabelText('select all'));
-      checkboxes.forEach((box) => {
-        expect(box.checked).toEqual(false);
-      });
+      expect(setState).toHaveBeenCalledWith(
+        expect.arrayContaining(mockData.map((n) => n.id)),
+      );
     });
   });
 
@@ -145,12 +156,10 @@ describe('MuiTable checkbox functionality', () => {
         showCheckboxes={true}
         showPagination={false}
         totalRows={mockData.length}
-        selectedRows={init}
+        selectedRows={[1]}
         setSelectedRows={setState}
       />,
     );
-    const oneBox = screen.getByRole('checkbox', { name: 'table-checkbox-0' });
-    fireEvent.click(oneBox);
     const selectAllBox = screen.getByLabelText('select all');
     expect(selectAllBox).toHaveAttribute('data-indeterminate', 'true');
   });

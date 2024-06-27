@@ -1,6 +1,5 @@
 import { message } from 'antd';
 import { getItems } from 'api/items';
-//import { portfolioTableData } from 'api/api.js';
 import ActionBar from 'components/ActionBar/ActionBar';
 import AddButton from 'components/AddButton/AddButton';
 import Filter from 'components/Filter/Filter';
@@ -105,21 +104,24 @@ function Portfolio() {
         }
         const response = await getItems({
           filters: filterObject,
-          fields: ['title', 'artist', 'collection'],
         });
         const result = await response.json();
         const data = result.data;
         const artworkItems = data.map(
           (datum) => datum.attributes.artwork_item.data.attributes,
         );
-        // const data = portfolioTableData;
-        // populate search options
-        // const titles = data.map((item) => item.title);
         const titles = artworkItems.map((item) => item.title);
-        // const artists = data.map((item) => item.artist);
         const artists = artworkItems.map((item) => item.artist);
-        // const collections = data.map((item) => item.collection);
-        const collections = artworkItems.map((item) => item.workspace);
+        let collections = [];
+        for (const item of data) {
+          const itemTags = item.attributes.tags.data.attributes;
+          for (const tag of itemTags) {
+            if (tag.key === 'Collection') {
+              collections.push(tag.value);
+            }
+          }
+        }
+
         const combinedArray = [...titles, ...artists, ...collections];
         const uniqueOptions = Array.from(new Set(combinedArray)).sort();
 

@@ -1,4 +1,5 @@
 import { format, parseISO } from 'date-fns';
+import { toZonedTime } from 'date-fns-tz';
 
 export const calculatePortfolioTotal = (portfolio) => {
   let total = 0;
@@ -9,10 +10,14 @@ export const calculatePortfolioTotal = (portfolio) => {
 };
 
 export const formatDate = (date) => {
+  if (date === undefined) {
+    return 'Unavailable';
+  }
   const parsedDate = parseISO(date);
-  const monthAbbreviation = format(parsedDate, 'MMM');
-  const formattedDate = format(parsedDate, 'd');
-  const year = format(parsedDate, 'y');
+  const zoned = toZonedTime(parsedDate, 'UTC');
+  const monthAbbreviation = format(zoned, 'MMM');
+  const formattedDate = format(zoned, 'd');
+  const year = format(zoned, 'y');
   return `${monthAbbreviation} ${formattedDate}, ${year}`;
 };
 
@@ -23,6 +28,9 @@ const currencyFormatter = new Intl.NumberFormat('en-US', {
 });
 
 export const formatMoney = (value) => {
+  if (value === undefined) {
+    return 'Unavailable';
+  }
   return currencyFormatter.format(value);
 };
 
@@ -44,7 +52,8 @@ export const formatFilterForQuery = (filter) => {
         filter[key].forEach((item) => {
           let itemQuery = [];
           if (Array.isArray(item.query)) {
-            for (const val in item.query) {
+            for (let i = 0; i < item.query.length; i++) {
+              let val = item.query[i];
               itemQuery.push(!isNaN(val) ? Number(val) : val);
             }
           } else {
@@ -61,4 +70,5 @@ export const formatFilterForQuery = (filter) => {
       }
     }
   }
+  return filterObj;
 };

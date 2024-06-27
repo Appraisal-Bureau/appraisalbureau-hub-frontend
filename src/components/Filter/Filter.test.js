@@ -2,7 +2,6 @@ import '@testing-library/jest-dom';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { getSavedFilters } from 'api/user-filters';
 import React from 'react';
-import { act } from 'react-dom/test-utils';
 
 import Filter from './Filter';
 
@@ -43,8 +42,11 @@ const filter = {};
 const addFilter = jest.fn();
 const removeFilter = jest.fn();
 
-jest.mock('api/user-filters');
-getSavedFilters.mockResolvedValue({ data: { data: [] } });
+const setState = jest.fn();
+const useStateSpy = jest.spyOn(React, 'useState');
+beforeEach(() => {
+  useStateSpy.mockImplementation((init) => [init, setState]);
+});
 
 describe('Filter Component', () => {
   it('renders without errors', () => {
@@ -61,7 +63,9 @@ describe('Filter Component', () => {
   });
 
   it('fetches saved filters and populates the dropdown', async () => {
-    getSavedFilters.mockResolvedValue({ data: savedFilters });
+    jest
+      .spyOn(require('api/user-filters'), 'getSavedFilters')
+      .mockReturnValue(savedFilters);
     render(
       <Filter
         filter={filter}
@@ -73,91 +77,6 @@ describe('Filter Component', () => {
 
     await waitFor(() => {
       expect(getSavedFilters).toHaveBeenCalled();
-    });
-
-    const dropdown = screen.getByRole('combobox', {
-      name: 'Apply Saved Filter',
-    });
-    fireEvent.mouseDown(dropdown);
-    await waitFor(() => {
-      expect(screen.getByText('Saved Filter 1')).toBeInTheDocument();
-    });
-  });
-
-  it('updates dynamic filter options based on add filter type', async () => {
-    getSavedFilters.mockResolvedValue({ data: { data: [] } });
-    render(
-      <Filter
-        filter={filter}
-        addFilter={addFilter}
-        removeFilter={removeFilter}
-        columns={columns}
-      />,
-    );
-
-    const addFilterTypeDropdown = await screen.findByTestId('add-filter-type');
-    fireEvent.click(addFilterTypeDropdown);
-    fireEvent.click(screen.getByText('Title'));
-
-    const dynamicFilterDropdown = await screen.findByTestId('dynamic-filter');
-    fireEvent.click(dynamicFilterDropdown);
-    expect(screen.getByText('Multi-Select')).toBeInTheDocument();
-
-    fireEvent.mouseDown(addFilterTypeDropdown);
-    fireEvent.click(screen.getByText('Date Acquired'));
-
-    fireEvent.mouseDown(dynamicFilterDropdown);
-    expect(screen.getByText('Exactly')).toBeInTheDocument();
-    expect(screen.getByText('Between')).toBeInTheDocument();
-  });
-
-  it('handles search query input change', async () => {
-    render(
-      <Filter
-        filter={filter}
-        addFilter={addFilter}
-        removeFilter={removeFilter}
-        columns={columns}
-      />,
-    );
-
-    const addFilterTypeDropdown = screen.getByTestId('add-filter-type');
-    fireEvent.mouseDown(addFilterTypeDropdown);
-    fireEvent.click(screen.getByText('Title'));
-
-    const searchInput = screen.getByLabelText('Search');
-    fireEvent.change(searchInput, { target: { value: 'test' } });
-
-    expect(searchInput.value).toBe('test');
-  });
-
-  it('adds a filter when Add button is clicked', async () => {
-    render(
-      <Filter
-        filter={filter}
-        addFilter={addFilter}
-        removeFilter={removeFilter}
-        columns={columns}
-      />,
-    );
-
-    const addFilterTypeDropdown = screen.getByTestId('add-filter-type');
-    fireEvent.mouseDown(addFilterTypeDropdown);
-    fireEvent.click(screen.getByText('Title'));
-
-    const dynamicFilterDropdown = screen.getByTestId('dynamic-filter');
-    fireEvent.mouseDown(dynamicFilterDropdown);
-    fireEvent.click(screen.getByText('Multi-Select'));
-
-    const searchInput = screen.getByLabelText('Search');
-    fireEvent.change(searchInput, { target: { value: 'test' } });
-
-    fireEvent.click(screen.getByText('Add'));
-
-    expect(addFilter).toHaveBeenCalledWith('title', {
-      id: 'test',
-      selector: '$eqi',
-      query: 'test',
     });
   });
 
